@@ -9,8 +9,8 @@ namespace QuotesApp.Models
     {
         public int QuoteId { get; set; }
         public string CompanyName { get; set; }
+        public string CompanyTicker { get; set; }
         public float QuotePrice { get; set; }
         public DateTime QuoteDate { get; set; }
-        public string SourceName { get; set; }
     }
 }

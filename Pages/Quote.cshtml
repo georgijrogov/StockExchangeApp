@@ -18,12 +18,12 @@
 </table>
 <table class="table">
     <thead>
-        <tr><th>ID</th><th>Компания</th><th>Цена</th><th>Дата</th><th>Источник</th></tr>
+        <tr><th>ID</th><th>Компания</th><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
     </thead>
     <tbody>
         @foreach (var res in Model.Results)
         {
-            <tr><td>@res.QuoteId</td><td>@res.CompanyName</td><td>@res.QuotePrice</td><td>@res.QuoteDate</td><td>@res.SourceName</td></tr>
+            <tr><td>@res.QuoteId</td><td>@res.CompanyName</td><td>@res.CompanyTicker</td><td>@res.QuotePrice</td><td>@res.QuoteDate</td></tr>
         }
     </tbody>
 </table>
