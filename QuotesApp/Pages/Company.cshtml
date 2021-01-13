@@ -1,0 +1,18 @@
+﻿@page
+@model QuotesApp.Pages.CompanyModel
+@{
+    ViewData["Title"] = "Список компаний";
+}
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr><th>Название</th><th>Тикер</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var company in Model.Companies)
+        {
+            <tr><td>@company.Name</td><td>@company.Ticker</td></tr>
+        }
+    </tbody>
+</table>

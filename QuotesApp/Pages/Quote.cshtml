@@ -1,0 +1,32 @@
+﻿@page "{handler?}"
+@model QuotesApp.Pages.QuoteModel
+@{
+    ViewData["Title"] = "Список котировок";
+}
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr><th>ID компании</th><th>Цена</th><th>Дата</th><th>ID источника</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model.Quotes)
+        {
+            <tr><td>@quote.Id_Company</td><td>@quote.Price</td><td>@quote.Date</td><td>@quote.Id_Source</td></tr>
+        }
+    </tbody>
+</table>
+<table class="table">
+    <thead>
+        <tr><th>ID</th><th>Компания</th><th>Цена</th><th>Дата</th><th>Источник</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var res in Model.Results)
+        {
+            <tr><td>@res.QuoteId</td><td>@res.CompanyName</td><td>@res.QuotePrice</td><td>@res.QuoteDate</td><td>@res.SourceName</td></tr>
+        }
+    </tbody>
+</table>
+<form method="POST">
+    <input type="submit" asp-page-handler="AddToDB" value="Добавить в бд" />
+</form>
