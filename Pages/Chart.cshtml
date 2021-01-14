@@ -1,0 +1,51 @@
+﻿@page
+@model QuotesApp.Pages.ChartModel
+@{
+
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script type="text/javascript">
+        var dataJson = @Html.Raw(Model.Json);
+        window.onload = function () {
+
+            let chart = new CanvasJS.Chart("chartContainer", {
+                theme: "light2",
+                animationEnabled: true,
+                zoomEnabled: true,
+                title: {
+                    text: "Quotes chart"
+                },
+                data: [{
+                    type: "area",
+                    dataPoints: []
+                }]
+            });
+
+
+            let quotes = [{ "QuotePrice": 3.0, "QuoteDate": "2021-01-12T00:00:00" },
+            { "QuotePrice": 2.0, "QuoteDate": "2021-01-13T00:00:00" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T00:18:43.1506084" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T16:02:11.0224458" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T16:08:44.7007164" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:04:11.1654464" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:04:35.6116439" },
+            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:06:12.097366" }];
+
+
+            chart.options.data[0].dataPoints = quotes.map(function (quote) {
+                return { x: new Date(quote.QuoteDate), y: quote.QuotePrice }
+            })
+            chart.render();
+
+        }
+    </script>
+    <title>Index</title>
+</head>
+<body>
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    @Html.Raw(Model.Json);
+</body>
+</html>
