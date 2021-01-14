@@ -3,6 +3,7 @@
 @{
 
 }
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -16,7 +17,7 @@
                 animationEnabled: true,
                 zoomEnabled: true,
                 title: {
-                    text: "Quotes chart"
+                    text: "График цен"
                 },
                 data: [{
                     type: "area",
@@ -25,14 +26,7 @@
             });
 
 
-            let quotes = [{ "QuotePrice": 3.0, "QuoteDate": "2021-01-12T00:00:00" },
-            { "QuotePrice": 2.0, "QuoteDate": "2021-01-13T00:00:00" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T00:18:43.1506084" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T16:02:11.0224458" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T16:08:44.7007164" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:04:11.1654464" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:04:35.6116439" },
-            { "QuotePrice": 130.89, "QuoteDate": "2021-01-14T17:06:12.097366" }];
+            let quotes = @Html.Raw(Model.Json);
 
 
             chart.options.data[0].dataPoints = quotes.map(function (quote) {
@@ -45,7 +39,62 @@
     <title>Index</title>
 </head>
 <body>
-    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-    @Html.Raw(Model.Json);
+    <h3>Акции @Model.Message</h3>
+    <div class="div1">
+        <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    </div>
+    <div class="div2">
+        <div>
+            <table class="table">
+                <thead>
+                    <tr><th>Компании</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Apple" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Tesla" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="AMD" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Intel" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Amazon" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Microsoft" name="comp"/>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
