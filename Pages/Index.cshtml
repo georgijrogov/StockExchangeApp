@@ -1,47 +1,17 @@
 ﻿@page
-
-@{
-    ViewData["Title"] = "Home page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <script>
-
-    </script>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
-
 @model IndexModel
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Компании";
 }
 
-<h1>Index</h1>
-
-<table class="table">
-    <thead>
-        <tr> 
-            <th>
-                c
-            </th>
-            <th>
-                h
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {
-            <tr>
-                <td>                   
-                    @Model.Json
-                </td>
-                <td>
-                    @Model.Json
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr><th>Компания</th><th>Тикер</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var res in Model.Companies)
+            {
+                <tr><td>@res.Name</td><td>@res.Ticker</td></tr>
+            }
+        </tbody>
+    </table>

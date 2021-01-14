@@ -5,6 +5,7 @@
 }
 <h2>@ViewData["Title"]</h2>
 
+@* Вывод всех котировок в таблицу
 <table class="table">
     <thead>
         <tr><th>ID компании</th><th>Цена</th><th>Дата</th><th>ID источника</th></tr>
@@ -15,7 +16,7 @@
             <tr><td>@quote.Id_Company</td><td>@quote.Price</td><td>@quote.Date</td><td>@quote.Id_Source</td></tr>
         }
     </tbody>
-</table>
+</table>*@
 <table class="table">
     <thead>
         <tr><th>ID</th><th>Компания</th><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
