@@ -107,9 +107,9 @@ namespace QuotesApp.Pages
                     Id_Source = 1
                 };
                 _context.Quotes.Add(newquote);
-                _context.SaveChanges();
                 Thread.Sleep(500);
             }
+            _context.SaveChanges();
             OnGet();
         }
     }
