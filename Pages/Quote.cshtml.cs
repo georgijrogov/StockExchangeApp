@@ -66,7 +66,7 @@ namespace QuotesApp.Pages
             //};
             //var comps = _context.Companies.FromSqlRaw("SELECT * FROM Companies").ToList();            
         }
-        public void OnPostAddToDB()
+        public async Task<IActionResult> OnPostAddToDB()
         {
             string token = "&token=bvu2mc748v6pkq82cr00";
             string apis = "";
@@ -107,10 +107,10 @@ namespace QuotesApp.Pages
                     Id_Source = 1
                 };
                 _context.Quotes.Add(newquote);
-                Thread.Sleep(500);
+                await Task.Delay(500);
             }
-            _context.SaveChanges();
-            OnGet();
+            await _context.SaveChangesAsync();
+            return RedirectToPage("Quote");
         }
     }
 }

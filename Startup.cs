@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz.Impl;
 using QuotesApp.Models;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,25 @@ namespace QuotesApp
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
             services.AddRazorPages();
+            //QuartzTest.ConfigureQuartzJobs();
+
+
+            // Register job
+            services.AddTransient<DBUpdater>();
+            // Register job dependencies
+            //services.AddTransient<IFoo, Foo>();
+            var container = services.BuildServiceProvider();
+
+            // Create an instance of the job factory
+            var jobFactory = new JobFactory(container);
+
+
+            // Create a Quartz.NET scheduler
+            var schedulerFactory = new StdSchedulerFactory();
+            var scheduler = schedulerFactory.GetScheduler().Result;
+
+            // Tell the scheduler to use the custom job factory
+            scheduler.JobFactory = jobFactory;
             DBUpdaterScheduler.Start();
         }
 

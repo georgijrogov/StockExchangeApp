@@ -9,10 +9,11 @@ namespace QuotesApp.Models
 {
     public class DBUpdaterScheduler
     {
+
         public static async void Start()
         {
             IScheduler scheduler = await StdSchedulerFactory.GetDefaultScheduler();
-            await scheduler.Start();
+            
 
             IJobDetail job = JobBuilder.Create<DBUpdater>().Build();
 
@@ -25,6 +26,7 @@ namespace QuotesApp.Models
                 .Build();                               // создаем триггер
 
             await scheduler.ScheduleJob(job, trigger);        // начинаем выполнение работы
+            await scheduler.Start();
         }
     }
 }

@@ -57,9 +57,9 @@ namespace QuotesApp.Models
                     Id_Source = 1
                 };
                 _context.Quotes.Add(newquote);
-                Thread.Sleep(500);
+                await Task.Delay(500);
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
