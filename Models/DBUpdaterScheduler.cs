@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuotesApp.Models
+namespace QuotesExchangeApp.Models
 {
     public class DBUpdaterScheduler
     {
@@ -13,7 +13,7 @@ namespace QuotesApp.Models
         public static async void Start()
         {
             IScheduler scheduler = await StdSchedulerFactory.GetDefaultScheduler();
-            
+
 
             IJobDetail job = JobBuilder.Create<DBUpdater>().Build();
 

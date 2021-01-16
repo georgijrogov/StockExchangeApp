@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuotesApp
+namespace QuotesExchangeApp
 {
     public class Program
     {

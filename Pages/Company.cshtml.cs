@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using QuotesApp.Models;
+using QuotesExchangeApp.Data;
+using QuotesExchangeApp.Models;
 
-namespace QuotesApp.Pages
+namespace QuotesExchangeApp.Pages
 {
     public class CompanyModel : PageModel
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationDbContext _context;
         public List<Company> Companies { get; set; }
-        public CompanyModel(ApplicationContext db)
+        public CompanyModel(ApplicationDbContext db)
         {
             _context = db;
         }

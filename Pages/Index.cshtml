@@ -4,14 +4,14 @@
     ViewData["Title"] = "Компании";
 }
 
-    <table class="table">
-        <thead>
-            <tr><th>Компания</th><th>Тикер</th></tr>
-        </thead>
-        <tbody>
-            @foreach (var res in Model.Companies)
-            {
-                <tr><td>@res.Name</td><td>@res.Ticker</td></tr>
-            }
-        </tbody>
-    </table>
+<table class="table">
+    <thead>
+        <tr><th>Компания</th><th>Тикер</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var res in Model.Companies)
+        {
+            <tr><td>@res.Name</td><td>@res.Ticker</td></tr>
+        }
+    </tbody>
+</table>

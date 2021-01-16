@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuotesApp.Models
+namespace QuotesExchangeApp.Models
 {
     public class ApplicationContext : DbContext
     {

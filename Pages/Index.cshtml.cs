@@ -2,20 +2,18 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using QuotesApp.Models;
+using QuotesExchangeApp.Data;
+using QuotesExchangeApp.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace QuotesApp.Pages
+namespace QuotesExchangeApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationDbContext _context;
         public List<Company> Companies { get; set; }
         private readonly ILogger<IndexModel> _logger;
         //WebClient client = new WebClient();
@@ -25,7 +23,7 @@ namespace QuotesApp.Pages
         //{
         //    _logger = logger;
         //}
-        public IndexModel(ApplicationContext db)
+        public IndexModel(ApplicationDbContext db)
         {
             _context = db;
         }

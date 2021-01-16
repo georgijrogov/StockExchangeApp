@@ -1,18 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using Quartz;
-using Quartz.Impl;
 using Quartz.Spi;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace QuotesApp.Models
+namespace QuotesExchangeApp.Models
 {
     public class JobFactory : IJobFactory
     {

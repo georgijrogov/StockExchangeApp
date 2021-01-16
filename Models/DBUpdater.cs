@@ -1,18 +1,18 @@
 ﻿using Newtonsoft.Json.Linq;
 using Quartz;
+using QuotesExchangeApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace QuotesApp.Models
+namespace QuotesExchangeApp.Models
 {
     public class DBUpdater : IJob
     {
-        private readonly ApplicationContext _context;
-        public DBUpdater(ApplicationContext db)
+        private readonly ApplicationDbContext _context;
+        public DBUpdater(ApplicationDbContext db)
         {
             _context = db;
         }

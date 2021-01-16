@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using QuotesApp.Models;
+using QuotesExchangeApp.Data;
 
-namespace QuotesApp.Pages
+namespace QuotesExchangeApp.Pages
 {
     public class ChartModel : PageModel
     {
         public string Message { get; set; }
-        private readonly ApplicationContext _context;
-        public ChartModel(ApplicationContext db)
+        private readonly ApplicationDbContext _context;
+        public ChartModel(ApplicationDbContext db)
         {
             _context = db;
         }
@@ -21,7 +21,7 @@ namespace QuotesApp.Pages
         public void OnGet()
         {
             Message = "Apple";
-            TakeQuotes(1,1);
+            TakeQuotes(1, 1);
         }
         public void OnPost(string comp)
         {
