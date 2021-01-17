@@ -30,7 +30,7 @@ namespace QuotesExchangeApp.Pages
 
         public void OnGet()
         {
-            Companies = _context.Companies.AsNoTracking().ToList();
+                
         }
     }
 }

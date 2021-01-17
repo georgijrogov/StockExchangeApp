@@ -39,116 +39,174 @@
     <title>Index</title>
 </head>
 <body>
-    <h3>Акции @Model.Message</h3>
+    <h3>Акции @Model.Comp (@Model.Message)</h3>
     <div class="div1">
         <div id="chartContainer" style="height: 300px; width: 100%;"></div>
     </div>
     <div class="div2">
+        @*<table class="table">
+                <thead>
+                    <tr><th>Компании</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Apple" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Tesla" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="AMD" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Intel" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Amazon" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form method="POST">
+                                <input type="submit" value="Microsoft" name="comp" />
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>*@
         <table class="table">
             <thead>
-                <tr><th>Компании</th></tr>
+                <tr><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Apple" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Tesla" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="AMD" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Intel" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Amazon" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Microsoft" name="comp" />
-                        </form>
-                    </td>
-                </tr>
+                @foreach (var res in Model.Results)
+                {
+                    <tr>
+                        <td>
+                            <form class="form-ticker" method="POST">
+                                <input type="submit" value="@res.CompanyTicker" name="comp" />
+                            </form>
+                        </td>
+                        <td>@res.QuotePrice</td>
+                        <td>@res.QuoteDate</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Day" value="День" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
+    
+    @*<form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Week" value="Неделя" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>
+    <form method="POST" class="form-inline">
+        <input type="submit" asp-page-handler="Month" value="Месяц" />
+        <input type="hidden" name="comp" value="@Model.Message" />
+    </form>*@
+    <div class="col-xs-12">
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="5 минут" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="1 час" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="4 часа" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="1 день" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Week" value="1 неделя" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Month" value="1 месяц" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="1 год" />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
+        <div class="col-xs-3">
+            <a>
+                <form method="POST" class="form">
+                    <input type="submit" asp-page-handler="Day" value="Макс." />
+                    <input type="hidden" name="comp" value="@Model.Message" />
+                </form>
+            </a>
+        </div>
     </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Week" value="Неделя" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-    <div class=".div21">
-        <form method="POST" class=".list-form">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-    </div>
-
-
-
-
-
-
-
-
 </body>
 </html>

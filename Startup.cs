@@ -34,7 +34,14 @@ namespace QuotesExchangeApp
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddRazorPages();
+            services.AddRazorPages(options =>
+            {
+                options.Conventions.AuthorizePage("/Quote");
+                options.Conventions.AuthorizePage("/Chart");
+                options.Conventions.AuthorizePage("/Company");
+                options.Conventions.AuthorizePage("/Index");
+
+            });
             //QuartzTest.ConfigureQuartzJobs();
 
 

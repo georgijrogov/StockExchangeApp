@@ -80,3 +80,32 @@ body {
     min-height: 150px;
     margin-left: 70%;
 }
+.link a {
+    display: block; /* Ссылка как блочный элемент */
+    height: 100%; /* Высота на весь слой */
+}
+.form-ticker input {
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 0;
+    background: #fff;
+    color: #000;
+}
+.col-xs-12 {
+    white-space: nowrap !important;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.col-xs-3 {
+    float: none !important;
+    display: inline-block !important;
+}
+
+.col-xs-3 a {
+    height: 100px;
+    display: block;
+    margin-top: 10px;
+    padding: 10px
+}
