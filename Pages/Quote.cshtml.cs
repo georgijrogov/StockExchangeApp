@@ -28,9 +28,10 @@ namespace QuotesExchangeApp.Pages
         }
         public void OnGet()
         {
+            string response = "";
             Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
             //var res = _context.Quotes.FromSqlRaw("SELECT Quotes.Id, Companies.Name, Quotes.Price, Quotes.Date, Sources.Name FROM Quotes JOIN Companies ON Companies.Id = Quotes.Id_Company JOIN Sources ON Sources.Id = Quotes.Id_Source").ToList();
-            var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 6))
+            var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
                        join company in _context.Companies on quote.Id_Company equals company.Id
                        join source in _context.Sources on quote.Id_Source equals source.Id
                        select new
@@ -46,31 +47,9 @@ namespace QuotesExchangeApp.Pages
             //Json = Json.Substring(1, Json.Length - 2);
             //Result Results = JsonConvert.DeserializeObject<Result>(Json);
             Results = JsonConvert.DeserializeObject<List<Result>>(Json);
-            //JObject Results = JObject.Parse(Json);
-            //Results = JsonConvert.DeserializeObject<Result>(json);
-            //foreach (var r in res)
-            //{
-            //Results[i].Id = r.QuoteID;
-            //Results[r.QuoteID].Id = r.QuoteID.ToString();
-            //Results[r.QuoteID].CompanyName = r.CompanyName.ToString();
-            //Results[r.QuoteID].Price = r.QuotePrice.ToString();
-            //Results[r.QuoteID].Date = r.QuoteDate.ToString();
-            //Results[r.QuoteID].SourceName = r.SourceName.ToString();
-            //Console.WriteLine($"{r.QuoteID} ({r.CompanyName} - {r.QuotePrice}) - {r.QuoteDate} - {r.SourceName}");
-            //}
-            //ViewData["Res"] = new Result
-            //{
-            //Id = 1,
-            //CompanyName = "adg",
-            //Price = 1,
-            //Date = new DateTime(2021, 1, 12),
-            //SourceName = "asf"
-            //};
-            //var comps = _context.Companies.FromSqlRaw("SELECT * FROM Companies").ToList();            
         }
         public async Task<IActionResult> OnPostAddToDB()
         {
-            
             string token = "&token=bvu2mc748v6pkq82cr00";
             string apis = "";
             string response = "";
@@ -81,7 +60,7 @@ namespace QuotesExchangeApp.Pages
             var api = from source in _context.Sources where source.Id == 1 select source.ApiUrl.ToString();
             foreach (var r in api)
                 apis = r;
-            var comps = from company in _context.Companies select company.Ticker;
+            var comps = from company in _context.Companies where company.Id < 7 select company.Ticker;
             foreach (var r in comps)
             {
                 QuoteResponse quoteObj = new QuoteResponse
@@ -92,27 +71,77 @@ namespace QuotesExchangeApp.Pages
                 quoteResponses.Add(quoteObj);
                 urls.Add(apis + r + token);
             }
+            api = from source in _context.Sources where source.Id == 2 select source.ApiUrl.ToString();
+            foreach (var r in api)
+                apis = r;
+            comps = from company in _context.Companies where company.Id > 6 select company.Ticker;
+            foreach (var r in comps)
+            {
+                QuoteResponse quoteObj = new QuoteResponse
+                {
+                    Url = apis + r + ".json",
+                    Ticker = r
+                };
+                quoteResponses.Add(quoteObj);
+                urls.Add(apis + r + ".json");
+            }
 
             foreach (var r in quoteResponses)
             {
-                int tickerID = 1;
-                response = new WebClient().DownloadString(r.Url);
-                string c = JObject.Parse(response).SelectToken("c").ToString();
-                float cValue = float.Parse(c);
-                var ticker = from company in _context.Companies where company.Ticker == r.Ticker select company.Id;
-                foreach (var rr in ticker)
-                    tickerID = rr;
-                Quote newquote = new Quote
+                if (r.Url.Length <= 70)
                 {
-                    Id_Company = tickerID,
-                    Price = cValue,
-                    Date = DateTime.Now,
-                    Id_Source = 1
-                };
-                _context.Quotes.Add(newquote);
-                await Task.Delay(500);
+                    int tickerID = 1;
+                    response = new WebClient().DownloadString(r.Url);
+                    string c = JObject.Parse(response).SelectToken("c").ToString();
+                    float cValue = float.Parse(c);
+                    var ticker = from company in _context.Companies where company.Ticker == r.Ticker select company.Id;
+                    foreach (var rr in ticker)
+                        tickerID = rr;
+                    Quote newquote = new Quote
+                    {
+                        Id_Company = tickerID,
+                        Price = cValue,
+                        Date = DateTime.Now,
+                        Id_Source = 1
+                    };
+                    _context.Quotes.Add(newquote);
+                    await Task.Delay(500);
+                }
+                else
+                {
+                    int i = 0;
+                    int tickerID = 1;                    
+                    response = new WebClient().DownloadString(r.Url);
+                    dynamic moex = JObject.Parse(response);
+                    while (i < 6)
+                    {
+                        if (moex.marketdata.data[i][12] == "0" || moex.marketdata.data[i][12] == null)
+                        {
+                            i = i + 1;
+                        }
+                        else
+                        {
+                            dynamic moexobj = moex.marketdata.data[i][12];
+                            float cValue = moexobj;
+                            var ticker = from company in _context.Companies where company.Ticker == r.Ticker select company.Id;
+                            foreach (var rr in ticker)
+                                tickerID = rr;
+                            Quote newquote = new Quote
+                            {
+                                Id_Company = tickerID,
+                                Price = cValue,
+                                Date = DateTime.Now,
+                                Id_Source = 2
+                            };
+                            _context.Quotes.Add(newquote);
+                            await Task.Delay(500);
+                            break;
+                        }
+                    }                                        
+                }                
             }
             await _context.SaveChangesAsync();
+
             return RedirectToPage("Quote");
         }
     }
