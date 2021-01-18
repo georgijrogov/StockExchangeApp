@@ -14,6 +14,7 @@ namespace QuotesExchangeApp.Pages
     {
         private readonly ApplicationDbContext _context;
         public List<Company> Companies { get; set; }
+        //public List<PropertiesObject> PropertiesObjects { get; set; }
         public CompanyModel(ApplicationDbContext db)
         {
             _context = db;
@@ -21,6 +22,18 @@ namespace QuotesExchangeApp.Pages
         public void OnGet()
         {
             Companies = _context.Companies.AsNoTracking().ToList();
+            //PropertiesObjects = _context.PropertiesObjects.AsNoTracking().ToList();
+            //int prop = 0;
+            //var res = (from propertieobj in _context.PropertiesObjects.Skip(Math.Max(0, PropertiesObjects.Count() - 1))
+            //           select new
+            //           {
+            //               PropertyID = propertieobj.Id,
+            //               PropertyMinutes = propertieobj.Minutes
+            //           }).ToList();
+            //foreach (var r in res)
+            //    prop = r.PropertyMinutes;
+            //int test = prop;
+            //DBUpdaterScheduler.Start();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace QuotesExchangeApp.Pages
         {
             SetValues(1440, comp);
         }
-        public void OnPost5Min(string comp)
+        public void OnPostFiveMin(string comp)
         {
             SetValues(5, comp);
         }
@@ -42,7 +42,7 @@ namespace QuotesExchangeApp.Pages
         {
             SetValues(60, comp);
         }
-        public void OnPost4Hours(string comp)
+        public void OnPostFourHours(string comp)
         {
             SetValues(240, comp);
         }
@@ -68,7 +68,8 @@ namespace QuotesExchangeApp.Pages
         }
         public void TakeQuotes(int c, int d)
         {
-
+            var test = DateTime.Now.AddMinutes(-d);
+            int i = 0;
             var res = (from quote in _context.Quotes
                        where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
                        orderby quote.Date
@@ -84,7 +85,7 @@ namespace QuotesExchangeApp.Pages
         {
             Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
             //var res = _context.Quotes.FromSqlRaw("SELECT Quotes.Id, Companies.Name, Quotes.Price, Quotes.Date, Sources.Name FROM Quotes JOIN Companies ON Companies.Id = Quotes.Id_Company JOIN Sources ON Sources.Id = Quotes.Id_Source").ToList();
-            var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 6))
+            var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
                        join company in _context.Companies on quote.Id_Company equals company.Id
                        join source in _context.Sources on quote.Id_Source equals source.Id
                        select new
@@ -133,6 +134,16 @@ namespace QuotesExchangeApp.Pages
             {
                 Comp = "Microsoft";
                 TakeQuotes(6, days);
+            }
+            if (message == "GAZP")
+            {
+                Comp = "Газпром";
+                TakeQuotes(7, days);
+            }
+            if (message == "YNDX")
+            {
+                Comp = "Яндекс";
+                TakeQuotes(8, days);
             }
         }
     }
