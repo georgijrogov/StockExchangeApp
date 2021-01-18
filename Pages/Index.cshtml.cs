@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,24 +14,43 @@ namespace QuotesExchangeApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
-        public List<Company> Companies { get; set; }
-        private readonly ILogger<IndexModel> _logger;
-        //WebClient client = new WebClient();
-        //public string Json { get; set; } = new WebClient().DownloadString("https://finnhub.io/api/v1/quote?symbol=AAPL&token=bvu2mc748v6pkq82cr00");
-
-        //public IndexModel(ILogger<IndexModel> logger)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        //public IndexModel(RoleManager<IdentityRole> roleManager)
         //{
-        //    _logger = logger;
+        //    this._roleManager = roleManager;
         //}
-        public IndexModel(ApplicationDbContext db)
+        public IndexModel(UserManager<IdentityUser> userManager)
         {
-            _context = db;
+            this._userManager = userManager;
         }
 
         public void OnGet()
         {
-                
+            //CreateRole();
+            //GiveRole();
+            RedirectToPage("Company");
+        }
+        public async Task CreateRole()
+        {
+            bool x = await _roleManager.RoleExistsAsync("Admin");
+            if (!x)
+            {
+                // first we create Admin role 
+                var role = new IdentityRole
+                {
+                    Name = "Admin"
+                };
+                await _roleManager.CreateAsync(role);
+            }
+        }
+        public async Task GiveRole()
+        {
+            var user = await _userManager.FindByEmailAsync("test@gmail.com");
+            if (user != null)
+            {
+                await _userManager.AddToRoleAsync(user, "admin");
+            }
         }
     }
 }

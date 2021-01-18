@@ -27,29 +27,50 @@ namespace QuotesExchangeApp.Pages
         {
             Message = "AAPL";
             Comp = "Apple";
-            TakeQuotes(1, 1);
+            TakeQuotes(1, 1440);
             TakeCompaniesList();
         }
         public void OnPost(string comp)
         {
-            SetValues(1, comp);
+            SetValues(1440, comp);
+        }
+        public void OnPost5Min(string comp)
+        {
+            SetValues(5, comp);
+        }
+        public void OnPostHour(string comp)
+        {
+            SetValues(60, comp);
+        }
+        public void OnPost4Hours(string comp)
+        {
+            SetValues(240, comp);
         }
         public void OnPostDay(string comp)
         {
-            SetValues(1, comp);
+            SetValues(1440, comp);
         }
         public void OnPostWeek(string comp)
         {
-            SetValues(7, comp);
+            SetValues(10080, comp);
         }
         public void OnPostMonth(string comp)
         {
-            SetValues(30, comp);
+            SetValues(43200, comp);
+        }
+        public void OnPostYear(string comp)
+        {
+            SetValues(525600, comp);
+        }
+        public void OnPostMax(string comp)
+        {
+            SetValues(10000000, comp);
         }
         public void TakeQuotes(int c, int d)
         {
+
             var res = (from quote in _context.Quotes
-                       where quote.Id_Company == c && quote.Date > DateTime.Now.AddDays(-d)
+                       where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
                        orderby quote.Date
                        select new
                        {

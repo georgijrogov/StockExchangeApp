@@ -5,14 +5,18 @@
 }
 <h2>@ViewData["Title"]</h2>
 
-<table class="table">
-    <thead>
-        <tr><th>Название</th><th>Тикер</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var company in Model.Companies)
-        {
-            <tr><td>@company.Name</td><td>@company.Ticker</td></tr>
-        }
-    </tbody>
-</table>
+<div class="div-custom">
+    <table class="table custom-table table-company">
+        <col class="col1">
+        <col class="coln">
+        <thead>
+            <tr><th>Название</th><th>Тикер</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Model.Companies)
+            {
+                <tr><td>@company.Name</td><td>@company.Ticker</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

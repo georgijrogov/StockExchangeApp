@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,7 @@ namespace QuotesExchangeApp.Pages
 {
     public class QuoteModel : PageModel
     {
+
         private readonly ApplicationDbContext _context;
         public List<Quote> Quotes { get; set; }
         public List<Company> Companies { get; set; }
@@ -67,6 +70,7 @@ namespace QuotesExchangeApp.Pages
         }
         public async Task<IActionResult> OnPostAddToDB()
         {
+            
             string token = "&token=bvu2mc748v6pkq82cr00";
             string apis = "";
             string response = "";

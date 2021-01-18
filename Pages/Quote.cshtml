@@ -17,17 +17,19 @@
             }
         </tbody>
     </table>*@
-<table class="table">
-    <thead>
-        <tr><th>ID</th><th>Компания</th><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var res in Model.Results)
-        {
-            <tr><td>@res.QuoteId</td><td>@res.CompanyName</td><td>@res.CompanyTicker</td><td>@res.QuotePrice</td><td>@res.QuoteDate</td></tr>
-        }
-    </tbody>
-</table>
-<form method="POST">
-    <input type="submit" asp-page-handler="AddToDB" value="Добавить в бд" />
-</form>
+<div class="div-custom">
+    <table class="table custom-table">
+        <thead>
+            <tr><th>ID</th><th>Компания</th><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var res in Model.Results)
+            {
+                <tr><td>@res.QuoteId</td><td>@res.CompanyName</td><td>@res.CompanyTicker</td><td>@res.QuotePrice</td><td>@res.QuoteDate</td></tr>
+            }
+        </tbody>
+    </table>
+    @*<form method="POST">
+        <input type="submit" asp-page-handler="AddToDB" value="Добавить в бд" />
+    </form>*@
+</div>

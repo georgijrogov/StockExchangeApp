@@ -2,14 +2,14 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+    color: #fff;
 }
-
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #fafafa;
 }
 
 .btn-primary {
@@ -17,17 +17,20 @@ a {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+.quotes-nav {
+    background-color: #12161c !important;
+}
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #000000;
+    background-color: #fff;
+    border-color: #000000;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+  font-size: 13px;
 }
 @media (min-width: 768px) {
   html {
@@ -59,8 +62,9 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #fafafa;
+    font-family: 'Montserrat', sans-serif;
 }
 .footer {
   position: absolute;
@@ -69,28 +73,46 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
-.div1 {
-    width: 70%;
-    min-height: 150px;
-    float: left;
-}
-
-.div2 {
-    width: 30%;
-    min-height: 150px;
-    margin-left: 70%;
-}
 .link a {
     display: block; /* Ссылка как блочный элемент */
     height: 100%; /* Высота на весь слой */
 }
-.form-ticker input {
+.nav-link a {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #fafafa;
+}
+.nav-link a:hover {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #f0b90b; /* Цвет ссылки при наведении на нее курсора мыши */
+}
+a:hover {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: #f0b90b; /* Цвет ссылки при наведении на нее курсора мыши */
+}
+.form-ticker-right input {
     height: 100%;
     width: 100%;
     border: none;
-    padding: 0;
+    padding: 5px;
     background: #fff;
-    color: #000;
+    color: #f0b90b;
+}
+.form-ticker-right input:hover {
+    background: #f0b90b;
+    color: #fff;
+}
+.form-ticker input {
+    height: 100%;
+    width: 100%;
+    border: solid;
+    border-width: 1px;
+    padding: 5px;
+    background: #fafafa;
+    color: #f0b90b;
+}
+.form-ticker input:hover {
+    background: #f0b90b;
+    color: #fafafa;
 }
 .col-xs-12 {
     white-space: nowrap !important;
@@ -108,4 +130,49 @@ body {
     display: block;
     margin-top: 10px;
     padding: 10px
+}
+
+.custom-table{
+    background-color: #fff;
+}
+
+.table-company {
+    table-layout: fixed;
+}
+.col1 {
+    width: 20%;
+}
+
+.coln {
+    width: 80%;
+}
+.div-custom {
+    background-color: #fff;
+    padding: 10px;
+}
+thead {
+    background-color: #fafafa;
+}
+.login-btn {
+    width: 100%;
+    color: #fafafa;
+    background-color: #e5b10b;
+    border-color: #e5b10b;
+}
+.login-btn:hover {
+    background-color: #f0b90b;
+    border-color: #e5b10b;
+}
+h5{
+    margin:25px;
+}
+.div-center {
+    text-align: center;
+}
+.custom-input {
+    background: #fff;
+    color: #f0b90b;
+    border-color: #f0b90b;
+    border: solid;
+    border-width: 1px;
 }
