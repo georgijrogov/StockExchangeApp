@@ -84,7 +84,6 @@ namespace QuotesExchangeApp.Pages
         public void TakeCompaniesList()
         {
             Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
-            //var res = _context.Quotes.FromSqlRaw("SELECT Quotes.Id, Companies.Name, Quotes.Price, Quotes.Date, Sources.Name FROM Quotes JOIN Companies ON Companies.Id = Quotes.Id_Company JOIN Sources ON Sources.Id = Quotes.Id_Source").ToList();
             var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
                        join company in _context.Companies on quote.Id_Company equals company.Id
                        join source in _context.Sources on quote.Id_Source equals source.Id
@@ -96,10 +95,9 @@ namespace QuotesExchangeApp.Pages
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
                        }).ToList();
-            //List<string> Results = new List<string>();
+            
             string Json = JsonConvert.SerializeObject(res);
-            //Json = Json.Substring(1, Json.Length - 2);
-            //Result Results = JsonConvert.DeserializeObject<Result>(Json);
+            
             Results = JsonConvert.DeserializeObject<List<Result>>(Json);
         }
         public void SetValues(int days, string message)

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
+using Quartz;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuotesExchangeApp.Pages
 {
@@ -22,6 +24,7 @@ namespace QuotesExchangeApp.Pages
         public void OnGet()
         {
             Companies = _context.Companies.AsNoTracking().ToList();
+
             //PropertiesObjects = _context.PropertiesObjects.AsNoTracking().ToList();
             //int prop = 0;
             //var res = (from propertieobj in _context.PropertiesObjects.Skip(Math.Max(0, PropertiesObjects.Count() - 1))

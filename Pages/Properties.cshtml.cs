@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Quartz;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 
@@ -11,10 +12,12 @@ namespace QuotesExchangeApp.Pages
 {
     public class PropertiesModel : PageModel
     {
+        private readonly IScheduler _scheduler;
         private readonly ApplicationDbContext _context;
-        public PropertiesModel(ApplicationDbContext db)
+        public PropertiesModel(ApplicationDbContext db, IScheduler sheduler)
         {
             _context = db;
+            _scheduler = sheduler;
         }
         public string Message { get; set; }
         public void OnGet()
@@ -29,15 +32,16 @@ namespace QuotesExchangeApp.Pages
             }
             else
             {
-                decimal result = sum.Value;
-                Math.Floor(result);
+                double result = sum.Value;
+                result = Math.Floor(result);
                 PropertiesObject propObj = new PropertiesObject
                 {
                     Minutes = sum.Value
                 };
                 _context.PropertiesObjects.Add(propObj);
                 _context.SaveChanges();
-                Message = $"„астота обновлени€ котировок изменена на {result.ToString()} минут. »зменени€ вступ€т в силу после перезапуска сервиса.";
+                QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(result));
+                Message = $"„астота обновлени€ котировок изменена на {result.ToString()} минут.";
             }
         }
     }

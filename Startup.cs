@@ -8,12 +8,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz.Impl;
+using Quartz;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Quartz.Spi;
 
 namespace QuotesExchangeApp
 {
@@ -47,26 +49,35 @@ namespace QuotesExchangeApp
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin"));
             });
-            //QuartzTest.ConfigureQuartzJobs();
+            
+            services.AddSingleton<IJobFactory, JobFactory>();
+            //services.AddTransient<DBUpdater>();
+            services.Add(new ServiceDescriptor(typeof(DBUpdater), typeof(DBUpdater), ServiceLifetime.Transient));            
+            //var container = services.BuildServiceProvider();
 
-
-            // Register job
-            services.AddTransient<DBUpdater>();
-            // Register job dependencies
-            //services.AddTransient<IFoo, Foo>();
-            var container = services.BuildServiceProvider();
-
-            // Create an instance of the job factory
-            var jobFactory = new JobFactory(container);
+            //var jobFactory = new JobFactory(container);
 
 
             // Create a Quartz.NET scheduler
-            var schedulerFactory = new StdSchedulerFactory();
-            var scheduler = schedulerFactory.GetScheduler().Result;
+            //var schedulerFactory = new StdSchedulerFactory();
+            //var scheduler = schedulerFactory.GetScheduler().Result;
 
             // Tell the scheduler to use the custom job factory
-            scheduler.JobFactory = jobFactory;
-            DBUpdaterScheduler.Start();
+            //scheduler.JobFactory = jobFactory;
+            //scheduler.JobFactory = provider.GetService<IJobFactory>();
+            services.AddSingleton(provider =>
+            {
+
+                var schedulerFactory = new StdSchedulerFactory();
+                var scheduler = schedulerFactory.GetScheduler().Result;
+                scheduler.JobFactory = provider.GetService<IJobFactory>();
+
+                scheduler.Start();
+
+                return scheduler;
+            });
+            services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
+            //DBUpdaterScheduler.Start();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

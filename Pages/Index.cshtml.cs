@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Quartz;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using System;
@@ -14,19 +15,25 @@ namespace QuotesExchangeApp.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IScheduler _scheduler;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         //public IndexModel(RoleManager<IdentityRole> roleManager)
         //{
         //    this._roleManager = roleManager;
         //}
-        public IndexModel(UserManager<IdentityUser> userManager)
+        public IndexModel(UserManager<IdentityUser> userManager, IScheduler sheduler)
         {
             this._userManager = userManager;
+            this._scheduler = sheduler;
         }
 
         public void OnGet()
         {
+            //var test = _schedulerFactory;
+            //var scheduler = _schedulerFactory.GetScheduler().Result;
+            //QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(1));
+            int i = 0;
             //CreateRole();
             //GiveRole();
             RedirectToPage("Company");

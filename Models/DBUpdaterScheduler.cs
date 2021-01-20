@@ -17,15 +17,15 @@ namespace QuotesExchangeApp.Models
 
             IJobDetail job = JobBuilder.Create<DBUpdater>().Build();
 
-            ITrigger trigger = TriggerBuilder.Create()  // создаем триггер
-                .WithIdentity("trigger1", "group1")     // идентифицируем триггер с именем и группой
-                .StartNow()                            // запуск сразу после начала выполнения
-                .WithSimpleSchedule(x => x            // настраиваем выполнение действия
-                    .WithIntervalInMinutes(4)          // через 4 минуты
-                    .RepeatForever())                   // бесконечное повторение
-                .Build();                               // создаем триггер
+            ITrigger trigger = TriggerBuilder.Create()  
+                .WithIdentity("trigger1", "group1")     
+                .StartNow()                            
+                .WithSimpleSchedule(x => x            
+                    .WithIntervalInMinutes(4)          
+                    .RepeatForever())                   
+                .Build();                               
 
-            await scheduler.ScheduleJob(job, trigger);        // начинаем выполнение работы
+            await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
         }
     }
