@@ -30,10 +30,7 @@ namespace QuotesExchangeApp.Pages
 
         public void OnGet()
         {
-            //var test = _schedulerFactory;
-            //var scheduler = _schedulerFactory.GetScheduler().Result;
             //QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(1));
-            int i = 0;
             //CreateRole();
             //GiveRole();
             RedirectToPage("Company");

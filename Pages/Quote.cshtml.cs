@@ -28,7 +28,6 @@ namespace QuotesExchangeApp.Pages
         }
         public void OnGet()
         {
-            string response = "";
             Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
             //var res = _context.Quotes.FromSqlRaw("SELECT Quotes.Id, Companies.Name, Quotes.Price, Quotes.Date, Sources.Name FROM Quotes JOIN Companies ON Companies.Id = Quotes.Id_Company JOIN Sources ON Sources.Id = Quotes.Id_Source").ToList();
             var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))

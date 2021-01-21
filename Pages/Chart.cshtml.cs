@@ -69,7 +69,6 @@ namespace QuotesExchangeApp.Pages
         public void TakeQuotes(int c, int d)
         {
             var test = DateTime.Now.AddMinutes(-d);
-            int i = 0;
             var res = (from quote in _context.Quotes
                        where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
                        orderby quote.Date
