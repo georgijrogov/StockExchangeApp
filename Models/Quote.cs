@@ -7,10 +7,10 @@ namespace QuotesExchangeApp.Models
 {
     public class Quote
     {
-        public int Id { get; set; }
-        public int Id_Company { get; set; }
+        public Guid Id { get; set; }
+        public Company Company { get; set; }
         public float Price { get; set; }
         public DateTime Date { get; set; }
-        public int Id_Source { get; set; }
+        public Source Source { get; set; }
     }
 }

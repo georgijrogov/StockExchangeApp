@@ -66,35 +66,52 @@ namespace QuotesExchangeApp.Pages
         {
             SetValues(10000000, comp);
         }
-        public void TakeQuotes(int c, int d)
+        public void TakeQuotes(string c, int d)
         {
             var test = DateTime.Now.AddMinutes(-d);
-            var res = (from quote in _context.Quotes
-                       where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
-                       orderby quote.Date
-                       select new
-                       {
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date
-                       }).ToList();
+            //var res = (from quote in _context.Quotes
+            //           where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
+            //           orderby quote.Date
+            //           select new
+            //           {
+            //               QuotePrice = quote.Price,
+            //               QuoteDate = quote.Date
+            //           }).ToList();
+            var res = _context.Quotes
+                .Where(x => x.Company.Id.ToString() == c && x.Date > DateTime.Now.AddMinutes(-d))
+                .OrderBy(x => x.Date)
+                .Select(x => new {
+                    QuotePrice = x.Price,
+                    QuoteDate = x.Date
+                }).ToList();
             Json = JsonConvert.SerializeObject(res);
             TakeCompaniesList();
         }
         public void TakeCompaniesList()
         {
             Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
+            //var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
+            //           join company in _context.Companies on quote.Id_Company equals company.Id
+            //           join source in _context.Sources on quote.Id_Source equals source.Id
+            //           select new
+            //           {
+            //               QuoteID = quote.Id,
+            //               CompanyName = company.Name,
+            //               CompanyTicker = company.Ticker,
+            //               QuotePrice = quote.Price,
+            //               QuoteDate = quote.Date,
+            //           }).ToList();
             var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
-                       join company in _context.Companies on quote.Id_Company equals company.Id
-                       join source in _context.Sources on quote.Id_Source equals source.Id
                        select new
                        {
                            QuoteID = quote.Id,
-                           CompanyName = company.Name,
-                           CompanyTicker = company.Ticker,
+                           CompanyId = quote.Company.Id,
+                           CompanyName = quote.Company.Name,
+                           CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
                        }).ToList();
-            
+
             string Json = JsonConvert.SerializeObject(res);
             
             Results = JsonConvert.DeserializeObject<List<Result>>(Json);
