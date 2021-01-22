@@ -39,8 +39,7 @@ namespace QuotesExchangeApp.Pages
         {
             bool x = await _roleManager.RoleExistsAsync("admin");
             if (!x)
-            {
-                // first we create Admin role 
+            { 
                 var role = new IdentityRole
                 {
                     Name = "admin"

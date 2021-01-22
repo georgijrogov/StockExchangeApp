@@ -54,15 +54,6 @@ namespace QuotesExchangeApp.Pages
         }
         public void TakeQuotes(int d, string c)
         {
-            //var test = DateTime.Now.AddMinutes(-d);
-            //var res = (from quote in _context.Quotes
-            //           where quote.Id_Company == c && quote.Date > DateTime.Now.AddMinutes(-d)
-            //           orderby quote.Date
-            //           select new
-            //           {
-            //               QuotePrice = quote.Price,
-            //               QuoteDate = quote.Date
-            //           }).ToList();
             CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == Guid.Parse(c));
             var res = _context.Quotes.Include(x => x.Company)
                 .Where(x => x.Company.Id == Guid.Parse(c) && x.Date > DateTime.Now.AddMinutes(-d)).ToList()
@@ -88,50 +79,5 @@ namespace QuotesExchangeApp.Pages
                            QuoteDate = quote.Date,
                        }).DistinctBy(x => x.CompanyId).ToList();
         }
-        
-        //public void SetValues(int min, string companyId)
-        //{
-        //    Message = message;
-        //    if (message == "AAPL")
-        //    {
-        //        Comp = "Apple";
-        //        TakeQuotes(1, days);
-        //    }
-        //    if (message == "TSLA")
-        //    {
-        //        Comp = "Tesla";
-        //        TakeQuotes(2, days);
-        //    }
-        //    if (message == "AMD")
-        //    {
-        //        Comp = "AMD";
-        //        TakeQuotes(3, days);
-        //    }
-        //    if (message == "INTC")
-        //    {
-        //        Comp = "Intel";
-        //        TakeQuotes(4, days);
-        //    }
-        //    if (message == "AMZN")
-        //    {
-        //        Comp = "Amazon";
-        //        TakeQuotes(5, days);
-        //    }
-        //    if (message == "MSFT")
-        //    {
-        //        Comp = "Microsoft";
-        //        TakeQuotes(6, days);
-        //    }
-        //    if (message == "GAZP")
-        //    {
-        //        Comp = "Газпром";
-        //        TakeQuotes(7, days);
-        //    }
-        //    if (message == "YNDX")
-        //    {
-        //        Comp = "Яндекс";
-        //        TakeQuotes(8, days);
-        //    }
-        //}
     }
 }
