@@ -18,32 +18,32 @@ namespace QuotesExchangeApp.Pages
         private readonly IScheduler _scheduler;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        //public IndexModel(RoleManager<IdentityRole> roleManager)
-        //{
-        //    this._roleManager = roleManager;
-        //}
-        public IndexModel(UserManager<IdentityUser> userManager, IScheduler sheduler)
+        public IndexModel(RoleManager<IdentityRole> roleManager)
         {
-            this._userManager = userManager;
-            this._scheduler = sheduler;
+            this._roleManager = roleManager;
         }
+        //public IndexModel(UserManager<IdentityUser> userManager, IScheduler sheduler)
+        //{
+        //    this._userManager = userManager;
+        //    this._scheduler = sheduler;
+        //}
 
         public void OnGet()
         {
             //QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(1));
-            //CreateRole();
+            CreateRole();
             //GiveRole();
             RedirectToPage("Company");
         }
         public async Task CreateRole()
         {
-            bool x = await _roleManager.RoleExistsAsync("Admin");
+            bool x = await _roleManager.RoleExistsAsync("admin");
             if (!x)
             {
                 // first we create Admin role 
                 var role = new IdentityRole
                 {
-                    Name = "Admin"
+                    Name = "admin"
                 };
                 await _roleManager.CreateAsync(role);
             }

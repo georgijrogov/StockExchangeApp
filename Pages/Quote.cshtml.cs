@@ -19,33 +19,24 @@ namespace QuotesExchangeApp.Pages
     {
 
         private readonly ApplicationDbContext _context;
-        public List<Quote> Quotes { get; set; }
-        public List<Company> Companies { get; set; }
-        public List<Result> Results { get; set; }
+        public IEnumerable<Result> Results { get; set; }
         public QuoteModel(ApplicationDbContext db)
         {
             _context = db;
         }
         public void OnGet()
         {
-            Quotes = _context.Quotes.AsNoTracking().ToList(); //Вывод всех котировок из бд
-            //var res = _context.Quotes.FromSqlRaw("SELECT Quotes.Id, Companies.Name, Quotes.Price, Quotes.Date, Sources.Name FROM Quotes JOIN Companies ON Companies.Id = Quotes.Id_Company JOIN Sources ON Sources.Id = Quotes.Id_Source").ToList();
-            var res = (from quote in _context.Quotes.Take(8).Include(x => x.Company)
-                       //join company in _context.Companies on quote.Company.Id equals company.Id
-                       //join source in _context.Sources on quote.Source.Id equals source.Id
-                       select new
+            var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
+            Results = (from quote in res.ToList()
+                       select new Result
                        {
-                           QuoteID = quote.Id,
+                           QuoteId = quote.Id,
+                           CompanyId = quote.Company.Id,
                            CompanyName = quote.Company.Name,
                            CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
-                       }).ToList();
-            //List<string> Results = new List<string>();
-            string Json = JsonConvert.SerializeObject(res);
-            //Json = Json.Substring(1, Json.Length - 2);
-            //Result Results = JsonConvert.DeserializeObject<Result>(Json);
-            Results = JsonConvert.DeserializeObject<List<Result>>(Json);
+                       }).DistinctBy(x => x.CompanyId).ToList();
         }
         //public async Task<IActionResult> OnPostAddToDB()
         //{

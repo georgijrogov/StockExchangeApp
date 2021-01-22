@@ -47,7 +47,7 @@ namespace QuotesExchangeApp
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin"));
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Admin"));
             });
             
             services.AddSingleton<IJobFactory, JobFactory>();
