@@ -31,7 +31,7 @@ namespace QuotesExchangeApp.Pages
         public void OnGet()
         {
             //QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(1));
-            CreateRole();
+            //CreateRole();
             //GiveRole();
             RedirectToPage("Company");
         }
