@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Quartz.Spi;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace QuotesExchangeApp
 {
@@ -49,7 +51,7 @@ namespace QuotesExchangeApp
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Admin"));
             });
-            
+            services.AddDirectoryBrowser();
             services.AddSingleton<IJobFactory, JobFactory>();
             //services.AddTransient<DBUpdater>();
             services.Add(new ServiceDescriptor(typeof(DBUpdater), typeof(DBUpdater), ServiceLifetime.Transient));            
@@ -95,6 +97,12 @@ namespace QuotesExchangeApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+                RequestPath = "/static"
+            });
 
             app.UseRouting();
 
