@@ -9,65 +9,6 @@ namespace QuotesExchangeApp.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Companies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                    Ticker = table.Column<string>(maxLength: 256, nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PropertiesObjects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    Minutes = table.Column<int>(nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertiesObjects", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sources",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    ApiUrl = table.Column<string>(maxLength: 256, nullable: true),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sources", x => x.Id);
-                });
-
-            //migrationBuilder.CreateTable(
-            //    name: "Quotes",
-            //    columns: table => new
-            //    {
-            //        Id = table.Column<int>(nullable: false),
-            //        Id_Company = table.Column<int>(nullable: false),
-            //        Price = table.Column<float>(nullable: false),
-            //        Date = table.Column<DateTime>(nullable: false),
-            //        Id_Source = table.Column<int>(nullable: false),
-            //    },
-            //    constraints: table =>
-            //    {
-            //        table.PrimaryKey("PK_Quotes", x => x.Id);
-            //        table.ForeignKey(
-            //            name: "FK_Quotes_Companies",
-            //            columns: x => x.Id_Company,
-            //            principalTable: "Companies",
-            //            principalColumn: "Id",
-            //            onDelete: ReferentialAction.Cascade);
-            //    });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {

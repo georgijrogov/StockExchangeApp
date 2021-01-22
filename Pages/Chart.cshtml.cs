@@ -27,46 +27,46 @@ namespace QuotesExchangeApp.Pages
         {
             Message = "AAPL";
             Comp = "Apple";
-            TakeQuotes(1, 1440);
+            //TakeQuotes(1, 1440);
             TakeCompaniesList();
         }
         public void OnPost(string comp)
         {
-            SetValues(1440, comp);
+            TakeQuotes(1440, comp);
         }
         public void OnPostFiveMin(string comp)
         {
-            SetValues(5, comp);
+            TakeQuotes(5, comp);
         }
         public void OnPostHour(string comp)
         {
-            SetValues(60, comp);
+            TakeQuotes(60, comp);
         }
         public void OnPostFourHours(string comp)
         {
-            SetValues(240, comp);
+            TakeQuotes(240, comp);
         }
         public void OnPostDay(string comp)
         {
-            SetValues(1440, comp);
+            TakeQuotes(1440, comp);
         }
         public void OnPostWeek(string comp)
         {
-            SetValues(10080, comp);
+            TakeQuotes(10080, comp);
         }
         public void OnPostMonth(string comp)
         {
-            SetValues(43200, comp);
+            TakeQuotes(43200, comp);
         }
         public void OnPostYear(string comp)
         {
-            SetValues(525600, comp);
+            TakeQuotes(525600, comp);
         }
         public void OnPostMax(string comp)
         {
-            SetValues(10000000, comp);
+            TakeQuotes(10000000, comp);
         }
-        public void TakeQuotes(string c, int d)
+        public void TakeQuotes(int d, string c)
         {
             var test = DateTime.Now.AddMinutes(-d);
             //var res = (from quote in _context.Quotes
@@ -77,13 +77,20 @@ namespace QuotesExchangeApp.Pages
             //               QuotePrice = quote.Price,
             //               QuoteDate = quote.Date
             //           }).ToList();
-            var res = _context.Quotes
-                .Where(x => x.Company.Id.ToString() == c && x.Date > DateTime.Now.AddMinutes(-d))
+            var res = _context.Quotes.Include(x => x.Company)
+                .Where(x => x.Company.Id.ToString() == c && x.Date > DateTime.Now.AddMinutes(-d)).ToList()
                 .OrderBy(x => x.Date)
                 .Select(x => new {
+                    CompanyTicker = x.Company.Ticker,
+                    CompanyName = x.Company.Name,
                     QuotePrice = x.Price,
                     QuoteDate = x.Date
                 }).ToList();
+            var firstQuote = res.FirstOrDefault();
+            if (firstQuote != null)
+            {
+                Comp = firstQuote.CompanyName;
+            }
             Json = JsonConvert.SerializeObject(res);
             TakeCompaniesList();
         }
@@ -101,64 +108,61 @@ namespace QuotesExchangeApp.Pages
             //               QuotePrice = quote.Price,
             //               QuoteDate = quote.Date,
             //           }).ToList();
-            var res = (from quote in _context.Quotes.Skip(Math.Max(0, Quotes.Count() - 8))
-                       select new
+            Results = (from quote in _context.Quotes.Include(x => x.Company).Skip(Math.Max(0, Quotes.Count() - 8))
+                       select new Result
                        {
-                           QuoteID = quote.Id,
+                           QuoteId = quote.Id,
                            CompanyId = quote.Company.Id,
                            CompanyName = quote.Company.Name,
                            CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
                        }).ToList();
-
-            string Json = JsonConvert.SerializeObject(res);
-            
-            Results = JsonConvert.DeserializeObject<List<Result>>(Json);
         }
-        public void SetValues(int days, string message)
-        {
-            Message = message;
-            if (message == "AAPL")
-            {
-                Comp = "Apple";
-                TakeQuotes(1, days);
-            }
-            if (message == "TSLA")
-            {
-                Comp = "Tesla";
-                TakeQuotes(2, days);
-            }
-            if (message == "AMD")
-            {
-                Comp = "AMD";
-                TakeQuotes(3, days);
-            }
-            if (message == "INTC")
-            {
-                Comp = "Intel";
-                TakeQuotes(4, days);
-            }
-            if (message == "AMZN")
-            {
-                Comp = "Amazon";
-                TakeQuotes(5, days);
-            }
-            if (message == "MSFT")
-            {
-                Comp = "Microsoft";
-                TakeQuotes(6, days);
-            }
-            if (message == "GAZP")
-            {
-                Comp = "Газпром";
-                TakeQuotes(7, days);
-            }
-            if (message == "YNDX")
-            {
-                Comp = "Яндекс";
-                TakeQuotes(8, days);
-            }
-        }
+        
+        //public void SetValues(int min, string companyId)
+        //{
+        //    Message = message;
+        //    if (message == "AAPL")
+        //    {
+        //        Comp = "Apple";
+        //        TakeQuotes(1, days);
+        //    }
+        //    if (message == "TSLA")
+        //    {
+        //        Comp = "Tesla";
+        //        TakeQuotes(2, days);
+        //    }
+        //    if (message == "AMD")
+        //    {
+        //        Comp = "AMD";
+        //        TakeQuotes(3, days);
+        //    }
+        //    if (message == "INTC")
+        //    {
+        //        Comp = "Intel";
+        //        TakeQuotes(4, days);
+        //    }
+        //    if (message == "AMZN")
+        //    {
+        //        Comp = "Amazon";
+        //        TakeQuotes(5, days);
+        //    }
+        //    if (message == "MSFT")
+        //    {
+        //        Comp = "Microsoft";
+        //        TakeQuotes(6, days);
+        //    }
+        //    if (message == "GAZP")
+        //    {
+        //        Comp = "Газпром";
+        //        TakeQuotes(7, days);
+        //    }
+        //    if (message == "YNDX")
+        //    {
+        //        Comp = "Яндекс";
+        //        TakeQuotes(8, days);
+        //    }
+        //}
     }
 }

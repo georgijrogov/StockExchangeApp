@@ -38,7 +38,7 @@ namespace QuotesExchangeApp.Pages
                 {
                     Minutes = sum.Value
                 };
-                _context.PropertiesObjects.Add(propObj);
+                //_context.PropertiesObjects.Add(propObj);
                 _context.SaveChanges();
                 QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(result));
                 Message = $"„астота обновлени€ котировок изменена на {result.ToString()} минут.";

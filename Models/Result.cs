@@ -7,7 +7,7 @@ namespace QuotesExchangeApp.Models
 {
     public class Result
     {
-        public int QuoteId { get; set; }
+        public Guid QuoteId { get; set; }
         public Guid CompanyId { get; set; }
         public string CompanyName { get; set; }
         public string CompanyTicker { get; set; }
