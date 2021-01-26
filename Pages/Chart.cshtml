@@ -76,7 +76,7 @@
                         <td>
                             <form class="form-ticker-right" method="POST">
                                 <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" />
-                                <input type="hidden" value="@res.CompanyId.ToString()" name="comp" />
+                                <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
                             </form>
                         </td>
                         @if (res.CompanyTicker == "GAZP" || res.CompanyTicker == "YNDX")

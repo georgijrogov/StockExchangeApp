@@ -39,24 +39,23 @@ namespace QuotesExchangeApp.Pages
                 CurrentCompany = _context.Companies.FirstOrDefault();
                 if (CurrentCompany != null)
                 {
-                    TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id.ToString());
+                    TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
                 }
             }
-            TakeCompaniesList();
         }
-        public void OnPostMain(string comp)
+        public void OnPostMain(Guid idCompany)
         {
-            TakeQuotes(1440, comp);
+            TakeQuotes(1440, idCompany);
         }
         public void OnPostCustom(int min)
         {
-            TakeQuotes(min, CurrentCompany.Id.ToString());
+            TakeQuotes(min, CurrentCompany.Id);
         }
-        public void TakeQuotes(int d, string c)
+        public void TakeQuotes(int min, Guid idCompany)
         {
-            CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == Guid.Parse(c));
+            CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == idCompany);
             var res = _context.Quotes.Include(x => x.Company)
-                .Where(x => x.Company.Id == Guid.Parse(c) && x.Date > DateTime.Now.AddMinutes(-d)).ToList()
+                .Where(x => x.Company.Id == idCompany && x.Date > DateTime.Now.AddMinutes(-min)).ToList()
                 .OrderBy(x => x.Date)
                 .Select(x => new {
                     QuotePrice = x.Price,
@@ -77,7 +76,7 @@ namespace QuotesExchangeApp.Pages
                            CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
-                       }).DistinctBy(x => x.CompanyId).ToList();
+                       }).ToList();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace QuotesExchangeApp.Pages
                            CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
                            QuoteDate = quote.Date,
-                       }).DistinctBy(x => x.CompanyId).ToList();
+                       }).ToList();
         }
     }
 }
