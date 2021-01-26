@@ -13,10 +13,8 @@ namespace QuotesExchangeApp.Pages
     public class PropertiesModel : PageModel
     {
         private readonly IScheduler _scheduler;
-        private readonly ApplicationDbContext _context;
-        public PropertiesModel(ApplicationDbContext db, IScheduler sheduler)
+        public PropertiesModel(IScheduler sheduler)
         {
-            _context = db;
             _scheduler = sheduler;
         }
         public string Message { get; set; }
@@ -32,10 +30,8 @@ namespace QuotesExchangeApp.Pages
             }
             else
             {
-                double result = sum.Value;
-                result = Math.Floor(result);
-                QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(result));
-                Message = $"„астота обновлени€ котировок изменена на {result.ToString()} минут.";
+                QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(sum.Value));
+                Message = $"„астота обновлени€ котировок изменена на {sum.Value.ToString()} минут.";
             }
         }
     }

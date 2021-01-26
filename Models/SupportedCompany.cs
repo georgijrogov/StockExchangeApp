@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 
 namespace QuotesExchangeApp.Models
 {
-    public class QuoteResponse
+    public class SupportedCompany
     {
-        public string Url { get; set; }
-        public string Ticker { get; set; }
     }
 }
