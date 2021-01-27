@@ -9,13 +9,13 @@ namespace QuotesExchangeApp.Pages
 {
     public class QuoteModel : PageModel
     {
-
         private readonly ApplicationDbContext _context;
         public IEnumerable<Result> Results { get; set; }
         public QuoteModel(ApplicationDbContext db)
         {
             _context = db;
         }
+
         public void OnGet()
         {
             var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());

@@ -2,17 +2,12 @@
 using Quartz;
 using Quartz.Spi;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuotesExchangeApp.Quartz
 {
     public class JobFactory : IJobFactory
     {
         protected readonly IServiceProvider Container;
-
         public JobFactory(IServiceProvider container)
         {
             Container = container;

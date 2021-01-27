@@ -139,14 +139,14 @@ a:hover {
 .table-company {
     table-layout: fixed;
 }
-.col1 {
+.company-name-col {
     width: 20%;
 }
 
-.coln {
+.company-content-col {
     width: 80%;
 }
-.div-custom {
+.charts-div{
     background-color: #fff;
     padding: 10px;
 }

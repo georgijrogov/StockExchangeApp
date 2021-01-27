@@ -1,14 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
-using Quartz;
-using Microsoft.AspNetCore.Identity;
 
 namespace QuotesExchangeApp.Pages
 {
@@ -20,6 +15,7 @@ namespace QuotesExchangeApp.Pages
         {
             _context = db;
         }
+
         public void OnGet()
         {
             Companies = _context.Companies.AsNoTracking().ToList();

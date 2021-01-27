@@ -17,20 +17,20 @@ namespace QuotesExchangeApp.Pages
 
         public void OnGet()
         {
-            Message = "Введите частоту обновления котировок(в минутах)";
+            Message = "Р’РІРµРґРёС‚Рµ С‡Р°СЃС‚РѕС‚Сѓ РѕР±РЅРѕРІР»РµРЅРёСЏ РєРѕС‚РёСЂРѕРІРѕРє(РІ РјРёРЅСѓС‚Р°С…)";
         }
 
-        public void OnPost(int? sum)
+        public void OnPost(int min)
         {
-            if (sum == null)
+            if (min <= 0)
             {
-                Message = "Введите число";
+                Message = "Р’РІРµРґРёС‚Рµ С‡РёСЃР»Рѕ Р±РѕР»СЊС€Рµ РЅСѓР»СЏ";
             }
             else
             {
-                QuartzServicesUtilities.ChangeJobInterval<FinnhubGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
-                QuartzServicesUtilities.ChangeJobInterval<MoexGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
-                Message = $"Частота обновления котировок изменена на {sum.Value.ToString()} минут.";
+                QuartzServicesUtilities.ChangeJobInterval<FinnhubGrabberJob>(_scheduler, TimeSpan.FromMinutes(min));
+                QuartzServicesUtilities.ChangeJobInterval<MoexGrabberJob>(_scheduler, TimeSpan.FromMinutes(min));
+                Message = $"Р§Р°СЃС‚РѕС‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ РєРѕС‚РёСЂРѕРІРѕРє РёР·РјРµРЅРµРЅР° РЅР° {min} РјРёРЅСѓС‚.";
             }
         }
     }

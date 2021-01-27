@@ -1,14 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Quartz;
-using QuotesExchangeApp.Data;
-using QuotesExchangeApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace QuotesExchangeApp.Pages
@@ -28,10 +19,8 @@ namespace QuotesExchangeApp.Pages
 
         public void OnGet()
         {
-            //QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(1));
-            //CreateRole();
-            //GiveRole();
-            RedirectToPage("Company");
+            //CreateRole(); //Создание роли
+            //GiveRole(); //Дать роль пользователю
         }
         public async Task CreateRole()
         {
