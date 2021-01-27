@@ -3,13 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using QuotesExchangeApp.Data;
+using QuotesExchangeApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace QuotesExchangeApp.Models
+namespace QuotesExchangeApp.Jobs
 {
     public class MoexGrabberJob : IJob
     {

@@ -1,22 +1,25 @@
 using System;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Quartz;
-using QuotesExchangeApp.Models;
+using QuotesExchangeApp.Jobs;
+using QuotesExchangeApp.Quartz;
 
 namespace QuotesExchangeApp.Pages
 {
     public class PropertiesModel : PageModel
     {
+        public string Message { get; set; }
         private readonly IScheduler _scheduler;
         public PropertiesModel(IScheduler sheduler)
         {
             _scheduler = sheduler;
         }
-        public string Message { get; set; }
+
         public void OnGet()
         {
             Message = "¬ведите частоту обновлени€ котировок(в минутах)";
         }
+
         public void OnPost(int? sum)
         {
             if (sum == null)

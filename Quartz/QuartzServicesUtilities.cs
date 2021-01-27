@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QuotesExchangeApp.Models
+namespace QuotesExchangeApp.Quartz
 {
     public static class QuartzServicesUtilities
     {

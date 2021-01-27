@@ -18,6 +18,8 @@ using System.Threading.Tasks;
 using Quartz.Spi;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using QuotesExchangeApp.Jobs;
+using QuotesExchangeApp.Quartz;
 
 namespace QuotesExchangeApp
 {

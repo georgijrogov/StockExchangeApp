@@ -13,39 +13,43 @@ namespace QuotesExchangeApp.Pages
     {
         public Dictionary<string, int> TimeSpans { get; set; } = new Dictionary<string, int>()
         {
-            { "5 минут", 5 },
-            { "1 час", 60 },
-            { "4 часа", 240 },
-            { "1 день", 1440 },
-            { "1 неделя", 10080 },
-            { "1 месяц", 43200 },
-            { "1 год", 525600 },
-            { "Макс.", 10000000 }
+            { "5 РјРёРЅСѓС‚", 5 },
+            { "1 С‡Р°СЃ", 60 },
+            { "4 С‡Р°СЃР°", 240 },
+            { "1 РґРµРЅСЊ", 1440 },
+            { "1 РЅРµРґРµР»СЏ", 10080 },
+            { "1 РјРµСЃСЏС†", 43200 },
+            { "1 РіРѕРґ", 525600 },
+            { "РњР°РєСЃ.", 10000000 }
         };
         public static Company CurrentCompany { get; set; }
         public List<Result> Results { get; set; }
+        public string Json { get; set; }
         private readonly ApplicationDbContext _context;
         public ChartModel(ApplicationDbContext db)
         {
             _context = db;
         }
-        public string Json { get; set; }
+
         public void OnGet()
         {
             CurrentCompany = _context.Companies.FirstOrDefault();
             if (CurrentCompany != null)
             {
-                TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
+                TakeQuotes(TimeSpans["1 РґРµРЅСЊ"], CurrentCompany.Id);
             }
         }
+
         public void OnPostMain(Guid idCompany)
         {
             TakeQuotes(1440, idCompany);
         }
+
         public void OnPostCustom(int min)
         {
             TakeQuotes(min, CurrentCompany.Id);
         }
+
         public void TakeQuotes(int min, Guid idCompany)
         {
             CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == idCompany);
@@ -59,6 +63,7 @@ namespace QuotesExchangeApp.Pages
             Json = JsonConvert.SerializeObject(res);
             TakeCompaniesList();
         }
+
         public void TakeCompaniesList()
         {
             var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());

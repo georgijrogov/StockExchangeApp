@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Quartz;
-using QuotesExchangeApp.Models;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using QuotesExchangeApp.Jobs;
+using QuotesExchangeApp.Quartz;
 
 namespace QuotesExchangeApp
 {
