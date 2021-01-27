@@ -23,27 +23,34 @@ namespace QuotesExchangeApp.Jobs
             _context = db;
             Configuration = configuration;
         }
+        private float GetCurrencyMultiplier()
+        {
+            var usdRateJson = new WebClient().DownloadString("https://www.cbr-xml-daily.ru/latest.js"); //текущий курс рубля в разных валютах
+
+            dynamic usd = JObject.Parse(usdRateJson);
+            string usdRate = usd.rates.USD;
+            float multiplier = float.Parse(usdRate.Replace(".", ","));
+
+            return multiplier;
+        }
+
         public async Task Execute(IJobExecutionContext context)
         {
+            float multiplier = GetCurrencyMultiplier();
             var sourceMOEX = _context.Sources.FirstOrDefault(x => x.Name == moexSourceName);
-            var responseRubToUsd = new WebClient().DownloadString("https://www.cbr-xml-daily.ru/latest.js"); //текущий курс рубля в разных валютах
             var moexCompanies = _context.SupportedCompanies.Include(x => x.Company).Where(x => x.Source.Name == moexSourceName).Select(x => x.Company);
             foreach (var company in moexCompanies)
             {
                 var response = new WebClient().DownloadString(sourceMOEX.ApiUrl + company.Ticker + ".json");
 
-                dynamic usd = JObject.Parse(responseRubToUsd);
-                string usdRate = usd.rates.USD;
-                float multiplier = float.Parse(usdRate.Replace(".", ","));
-
                 dynamic moex = JObject.Parse(response);
                 string moexstring = moex.marketdata.data[2][12];
-                float moexobj = float.Parse(moexstring.Replace(".", ","));
-                float cValue = moexobj * multiplier; //Перевод из рублей в доллары
+                float rawPrice = float.Parse(moexstring.Replace(".", ","));
+                float price = rawPrice * multiplier; //Перевод из рублей в доллары
                 Quote newquote = new Quote
                 {
                     Company = company,
-                    Price = (float)Math.Round(cValue, 2),
+                    Price = (float)Math.Round(price, 2),
                     Date = DateTime.Now,
                     Source = sourceMOEX
                 };

@@ -18,7 +18,8 @@
                     "#f0b90b"
                 ]);
 
-            let chart = new CanvasJS.Chart("chartContainer", {
+            const quotes = @Html.Raw(Model.Json);
+            const chart = new CanvasJS.Chart("chartContainer", {
                 colorSet: "YelowSet",
                 theme: "light2",
                 animationEnabled: true,
@@ -31,10 +32,6 @@
                     dataPoints: []
                 }]
             });
-
-
-            quotes = @Html.Raw(Model.Json);
-
 
             chart.options.data[0].dataPoints = quotes.map(function (quote) {
                 return { x: new Date(quote.QuoteDate), y: quote.QuotePrice }
@@ -86,85 +83,6 @@
             </table>
         </div>
     </div>
-
-    @*<table class="table">
-            <thead>
-                <tr><th>Компании</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Apple" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Tesla" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="AMD" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Intel" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Amazon" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <form method="POST">
-                            <input type="submit" value="Microsoft" name="comp" />
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>*@
-
-    @*<form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Week" value="Неделя" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>
-        <form method="POST" class="form-inline">
-            <input type="submit" asp-page-handler="Month" value="Месяц" />
-            <input type="hidden" name="comp" value="@Model.Message" />
-        </form>*@
 
 </body>
 </html>

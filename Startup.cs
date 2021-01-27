@@ -60,7 +60,6 @@ namespace QuotesExchangeApp
 
             services.AddSingleton(provider =>
             {
-
                 var schedulerFactory = new StdSchedulerFactory();
                 var scheduler = schedulerFactory.GetScheduler().Result;
                 scheduler.JobFactory = provider.GetService<IJobFactory>();

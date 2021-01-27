@@ -15,22 +15,23 @@ namespace QuotesExchangeApp.Pages
             _scheduler = sheduler;
         }
 
+
         public void OnGet()
         {
-            Message = "Введите частоту обновления котировок(в минутах)";
+            Message = "Р’РІРµРґРёС‚Рµ С‡Р°СЃС‚РѕС‚Сѓ РѕР±РЅРѕРІР»РµРЅРёСЏ РєРѕС‚РёСЂРѕРІРѕРє(РІ РјРёРЅСѓС‚Р°С…)";
         }
 
         public void OnPost(int? sum)
         {
             if (sum == null)
             {
-                Message = "Введите число";
+                Message = "Р’РІРµРґРёС‚Рµ С‡РёСЃР»Рѕ";
             }
             else
             {
                 QuartzServicesUtilities.ChangeJobInterval<FinnhubGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
                 QuartzServicesUtilities.ChangeJobInterval<MoexGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
-                Message = $"Частота обновления котировок изменена на {sum.Value.ToString()} минут.";
+                Message = $"Р§Р°СЃС‚РѕС‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ РєРѕС‚РёСЂРѕРІРѕРє РёР·РјРµРЅРµРЅР° РЅР° {sum.Value.ToString()} РјРёРЅСѓС‚.";
             }
         }
     }

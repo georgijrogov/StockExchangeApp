@@ -30,12 +30,11 @@ namespace QuotesExchangeApp.Jobs
             foreach (var company in finnhubCompanies)
             {
                 string response = new WebClient().DownloadString(sourceFinnhub.ApiUrl + company.Ticker + Configuration["FinnhubToken"]);
-                string price = JObject.Parse(response).SelectToken("c").ToString();
-                float cValue = float.Parse(price);
+                string rawPrice = JObject.Parse(response).SelectToken("c").ToString();
                 Quote newquote = new Quote
                 {
                     Company = company,
-                    Price = cValue,
+                    Price = float.Parse(rawPrice),
                     Date = DateTime.Now,
                     Source = sourceFinnhub
                 };
