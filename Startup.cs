@@ -84,12 +84,6 @@ namespace QuotesExchangeApp
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-                RequestPath = "/static"
-            });
 
             app.UseRouting();
 

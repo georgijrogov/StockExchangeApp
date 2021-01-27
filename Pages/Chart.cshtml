@@ -8,6 +8,9 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <title>Index</title>
+</head>
+<body>
     <script type="text/javascript">
         window.onload = function () {
             CanvasJS.addColorSet("YelowSet",
@@ -30,7 +33,7 @@
             });
 
 
-            let quotes = @Html.Raw(Model.Json);
+            quotes = @Html.Raw(Model.Json);
 
 
             chart.options.data[0].dataPoints = quotes.map(function (quote) {
@@ -40,9 +43,6 @@
 
         }
     </script>
-    <title>Index</title>
-</head>
-<body>
     <div class="row">
         <div class="col-sm-8 div-custom shadow">
             <h3>Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
@@ -55,7 +55,7 @@
                             <a>
                                 <form method="POST" class="form form-ticker">
                                     <input type="submit" asp-page-handler="Custom" value="@span.Key" />
-                                    <input type="hidden" value="@span.Value" name="min"/>
+                                    <input type="hidden" value="@span.Value" name="min" />
                                 </form>
                             </a>
                         </div>
@@ -71,71 +71,71 @@
                 <tbody>
                     @foreach (var res in Model.Results)
                     {
-                    <tr>
-                        <td>
-                            <form class="form-ticker-right" method="POST">
-                                <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" />
-                                <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
-                            </form>
-                        </td>
-                        <td>@res.QuotePrice $</td>
-                        <td>@res.QuoteDate</td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <form class="form-ticker-right" method="POST">
+                                    <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" />
+                                    <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
+                                </form>
+                            </td>
+                            <td>@res.QuotePrice $</td>
+                            <td>@res.QuoteDate</td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
 
-        @*<table class="table">
-                <thead>
-                    <tr><th>Компании</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="Apple" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="Tesla" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="AMD" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="Intel" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="Amazon" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <form method="POST">
-                                <input type="submit" value="Microsoft" name="comp" />
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>*@
+    @*<table class="table">
+            <thead>
+                <tr><th>Компании</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="Apple" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="Tesla" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="AMD" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="Intel" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="Amazon" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form method="POST">
+                            <input type="submit" value="Microsoft" name="comp" />
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>*@
 
     @*<form method="POST" class="form-inline">
             <input type="submit" asp-page-handler="Week" value="Неделя" />
@@ -165,6 +165,6 @@
             <input type="submit" asp-page-handler="Month" value="Месяц" />
             <input type="hidden" name="comp" value="@Model.Message" />
         </form>*@
-    
+
 </body>
 </html>

@@ -25,8 +25,6 @@ namespace QuotesExchangeApp.Models
         public async Task Execute(IJobExecutionContext context)
         {
             var sourceMOEX = _context.Sources.FirstOrDefault(x => x.Name == moexSourceName);
-            if (sourceMOEX == null)
-                return;
             var responseRubToUsd = new WebClient().DownloadString("https://www.cbr-xml-daily.ru/latest.js"); //текущий курс рубля в разных валютах
             var moexCompanies = _context.SupportedCompanies.Include(x => x.Company).Where(x => x.Source.Name == moexSourceName).Select(x => x.Company);
             foreach (var company in moexCompanies)

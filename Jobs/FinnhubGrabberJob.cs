@@ -25,8 +25,6 @@ namespace QuotesExchangeApp.Models
         public async Task Execute(IJobExecutionContext context)
         {
             var sourceFinnhub = _context.Sources.FirstOrDefault(x => x.Name == finnhubSourceName);
-            if (sourceFinnhub == null)
-                return;
             var finnhubCompanies = _context.SupportedCompanies.Include(x => x.Company).Where(x => x.Source.Name == finnhubSourceName).Select(x => x.Company);
             foreach (var company in finnhubCompanies)
             {
