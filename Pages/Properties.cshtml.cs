@@ -30,7 +30,8 @@ namespace QuotesExchangeApp.Pages
             }
             else
             {
-                QuartzServicesUtilities.ChangeJobInterval<DBUpdater>(_scheduler, TimeSpan.FromMinutes(sum.Value));
+                QuartzServicesUtilities.ChangeJobInterval<FinnhubGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
+                QuartzServicesUtilities.ChangeJobInterval<MoexGrabberJob>(_scheduler, TimeSpan.FromMinutes(sum.Value));
                 Message = $"„астота обновлени€ котировок изменена на {sum.Value.ToString()} минут.";
             }
         }

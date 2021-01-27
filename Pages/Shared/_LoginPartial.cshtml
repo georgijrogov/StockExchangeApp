@@ -5,7 +5,7 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    if (User.IsInRole("Admin"))
+    if (User.IsInRole("admin"))
     {
     <li class="nav-item">
         <a class="nav-link" asp-page="/Properties" title="Manage">Настройки</a>

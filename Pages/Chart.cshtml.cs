@@ -34,13 +34,10 @@ namespace QuotesExchangeApp.Pages
         public string Json { get; set; }
         public void OnGet()
         {
-            if (CurrentCompany == null)
+            CurrentCompany = _context.Companies.FirstOrDefault();
+            if (CurrentCompany != null)
             {
-                CurrentCompany = _context.Companies.FirstOrDefault();
-                if (CurrentCompany != null)
-                {
-                    TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
-                }
+                TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
             }
         }
         public void OnPostMain(Guid idCompany)

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuotesExchangeApp.Data;
 
 namespace QuotesExchangeApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210126205528_added_supportedcompany")]
+    partial class added_supportedcompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,55 +230,6 @@ namespace QuotesExchangeApp.Data.Migrations
 
                     b.ToTable("Companies");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2330f0c9-be7d-4fc8-b98d-81499c448f10"),
-                            Name = "Apple",
-                            Ticker = "AAPL"
-                        },
-                        new
-                        {
-                            Id = new Guid("7a7cb8da-d919-4197-8344-929bab677793"),
-                            Name = "Tesla",
-                            Ticker = "TSLA"
-                        },
-                        new
-                        {
-                            Id = new Guid("dff43011-4553-4718-a13c-f2c61fc473b0"),
-                            Name = "AMD",
-                            Ticker = "AMD"
-                        },
-                        new
-                        {
-                            Id = new Guid("57cb3dbe-d347-4245-b9f2-1eed7ba210f1"),
-                            Name = "Intel",
-                            Ticker = "INTC"
-                        },
-                        new
-                        {
-                            Id = new Guid("12dab3de-0adf-4731-9d1c-27f231f8f2d1"),
-                            Name = "Amazon",
-                            Ticker = "AMZN"
-                        },
-                        new
-                        {
-                            Id = new Guid("fd9ed837-16d2-4945-a00b-75f91776c10a"),
-                            Name = "Microsoft",
-                            Ticker = "MSFT"
-                        },
-                        new
-                        {
-                            Id = new Guid("2b1fb3db-100b-4372-a07b-27e7023ad76f"),
-                            Name = "Газпром",
-                            Ticker = "GAZP"
-                        },
-                        new
-                        {
-                            Id = new Guid("034dbd2d-44f7-4978-b77d-8251a170e908"),
-                            Name = "Яндекс",
-                            Ticker = "YNDX"
-                        });
                 });
 
             modelBuilder.Entity("QuotesExchangeApp.Models.Quote", b =>
@@ -322,40 +275,6 @@ namespace QuotesExchangeApp.Data.Migrations
 
                     b.ToTable("Sources");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("1a79bcdf-cad6-4b64-b2cf-d5e9f1d560ed"),
-                            ApiUrl = "https://finnhub.io/api/v1/quote?symbol=",
-                            Name = "Finnhub"
-                        },
-                        new
-                        {
-                            Id = new Guid("18c36bed-02c8-41b0-9d21-690bd88cbc39"),
-                            ApiUrl = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/",
-                            Name = "MOEX"
-                        });
-                });
-
-            modelBuilder.Entity("QuotesExchangeApp.Models.SupportedCompany", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("SourceId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("SourceId");
-
-                    b.ToTable("SupportedCompanies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -410,17 +329,6 @@ namespace QuotesExchangeApp.Data.Migrations
                 });
 
             modelBuilder.Entity("QuotesExchangeApp.Models.Quote", b =>
-                {
-                    b.HasOne("QuotesExchangeApp.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("QuotesExchangeApp.Models.Source", "Source")
-                        .WithMany()
-                        .HasForeignKey("SourceId");
-                });
-
-            modelBuilder.Entity("QuotesExchangeApp.Models.SupportedCompany", b =>
                 {
                     b.HasOne("QuotesExchangeApp.Models.Company", "Company")
                         .WithMany()

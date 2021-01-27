@@ -12,6 +12,7 @@ namespace QuotesExchangeApp.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<Source> Sources { get; set; }
+        public DbSet<SupportedCompany> SupportedCompanies { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

@@ -30,7 +30,6 @@ namespace QuotesExchangeApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -49,24 +48,14 @@ namespace QuotesExchangeApp
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin"));
             });
             services.AddDirectoryBrowser();
             services.AddSingleton<IJobFactory, JobFactory>();
-            //services.AddTransient<DBUpdater>();
-            services.Add(new ServiceDescriptor(typeof(DBUpdater), typeof(DBUpdater), ServiceLifetime.Transient));            
-            //var container = services.BuildServiceProvider();
 
-            //var jobFactory = new JobFactory(container);
+            services.Add(new ServiceDescriptor(typeof(FinnhubGrabberJob), typeof(FinnhubGrabberJob), ServiceLifetime.Transient));
+            services.Add(new ServiceDescriptor(typeof(MoexGrabberJob), typeof(MoexGrabberJob), ServiceLifetime.Transient));
 
-
-            // Create a Quartz.NET scheduler
-            //var schedulerFactory = new StdSchedulerFactory();
-            //var scheduler = schedulerFactory.GetScheduler().Result;
-
-            // Tell the scheduler to use the custom job factory
-            //scheduler.JobFactory = jobFactory;
-            //scheduler.JobFactory = provider.GetService<IJobFactory>();
             services.AddSingleton(provider =>
             {
 
@@ -79,9 +68,8 @@ namespace QuotesExchangeApp
                 return scheduler;
             });
             services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
-            //DBUpdaterScheduler.Start();
         }
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
@@ -92,7 +80,6 @@ namespace QuotesExchangeApp
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();

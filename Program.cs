@@ -36,7 +36,9 @@ namespace QuotesExchangeApp
         private static void ScheduleJobs(IServiceProvider services)
         {
             var scheduler = services.GetService<IScheduler>();
-            QuartzServicesUtilities.StartJob<DBUpdater>(scheduler, TimeSpan.FromMinutes(5));
+            var grabDelay = TimeSpan.FromMinutes(5);
+            QuartzServicesUtilities.StartJob<FinnhubGrabberJob>(scheduler, grabDelay);
+            QuartzServicesUtilities.StartJob<MoexGrabberJob>(scheduler, grabDelay);
         }
     }
 }

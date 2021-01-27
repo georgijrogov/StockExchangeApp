@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width" />
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script type="text/javascript">
-        var dataJson = @Html.Raw(Model.Json);
         window.onload = function () {
             CanvasJS.addColorSet("YelowSet",
                 [
@@ -79,16 +78,8 @@
                                 <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
                             </form>
                         </td>
-                        @if (res.CompanyTicker == "GAZP" || res.CompanyTicker == "YNDX")
-                        {
-                            <td>@res.QuotePrice Руб</td>
-                            <td>@res.QuoteDate</td>
-                        }
-                        else
-                        {
-                            <td>@res.QuotePrice $</td>
-                            <td>@res.QuoteDate</td>
-                        }
+                        <td>@res.QuotePrice $</td>
+                        <td>@res.QuoteDate</td>
                     </tr>
                     }
                 </tbody>
