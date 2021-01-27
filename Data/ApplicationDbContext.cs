@@ -15,6 +15,7 @@ namespace QuotesExchangeApp.Data
         {
             
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -32,6 +33,7 @@ namespace QuotesExchangeApp.Data
                     ApiUrl = "https://iss.moex.com/iss/engines/stock/markets/shares/securities/"
                 }
                 );
+
             builder.Entity<Company>().HasData(
                 new Company
                 {

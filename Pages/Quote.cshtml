@@ -3,20 +3,8 @@
 @{
     ViewData["Title"] = "Список котировок";
 }
-<h2>@ViewData["Title"]</h2>
 
-@* Вывод всех котировок в таблицу
-    <table class="table">
-        <thead>
-            <tr><th>ID компании</th><th>Цена</th><th>Дата</th><th>ID источника</th></tr>
-        </thead>
-        <tbody>
-            @foreach (var quote in Model.Quotes)
-            {
-                <tr><td>@quote.Id_Company</td><td>@quote.Price</td><td>@quote.Date</td><td>@quote.Id_Source</td></tr>
-            }
-        </tbody>
-    </table>*@
+<h2>@ViewData["Title"]</h2>
 <div class="div-custom">
     <table class="table custom-table">
         <thead>

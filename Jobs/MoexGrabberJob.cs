@@ -14,18 +14,19 @@ namespace QuotesExchangeApp.Jobs
 {
     public class MoexGrabberJob : IJob
     {
-        private readonly IConfiguration Configuration;
         private readonly string moexSourceName = "MOEX";
         public List<Company> Companies { get; set; }
         private readonly ApplicationDbContext _context;
+                private readonly IConfiguration Configuration;
         public MoexGrabberJob(ApplicationDbContext db, IConfiguration configuration)
         {
             _context = db;
             Configuration = configuration;
         }
+
         private float GetCurrencyMultiplier()
         {
-            var usdRateJson = new WebClient().DownloadString("https://www.cbr-xml-daily.ru/latest.js"); //текущий курс рубля в разных валютах
+            var usdRateJson = new WebClient().DownloadString("https://www.cbr-xml-daily.ru/latest.js"); //Текущий курс рубля в разных валютах
 
             dynamic usd = JObject.Parse(usdRateJson);
             string usdRate = usd.rates.USD;
@@ -47,6 +48,7 @@ namespace QuotesExchangeApp.Jobs
                 string moexstring = moex.marketdata.data[2][12];
                 float rawPrice = float.Parse(moexstring.Replace(".", ","));
                 float price = rawPrice * multiplier; //Перевод из рублей в доллары
+
                 Quote newquote = new Quote
                 {
                     Company = company,
@@ -54,8 +56,9 @@ namespace QuotesExchangeApp.Jobs
                     Date = DateTime.Now,
                     Source = sourceMOEX
                 };
+
                 _context.Quotes.Add(newquote);
-                await Task.Delay(500);
+                await Task.Delay(500); //Задержка между запросами
             }
             await _context.SaveChangesAsync();
         }

@@ -14,15 +14,16 @@ namespace QuotesExchangeApp.Jobs
 {
     public class FinnhubGrabberJob : IJob
     {
-        private readonly IConfiguration Configuration;
         public List<Company> Companies { get; set; }
         private readonly string finnhubSourceName = "Finnhub";
+        private readonly IConfiguration Configuration;
         private readonly ApplicationDbContext _context;
         public FinnhubGrabberJob(ApplicationDbContext db, IConfiguration configuration)
         {
             _context = db;
             Configuration = configuration;
         }
+
         public async Task Execute(IJobExecutionContext context)
         {
             var sourceFinnhub = _context.Sources.FirstOrDefault(x => x.Name == finnhubSourceName);
@@ -31,6 +32,7 @@ namespace QuotesExchangeApp.Jobs
             {
                 string response = new WebClient().DownloadString(sourceFinnhub.ApiUrl + company.Ticker + Configuration["FinnhubToken"]);
                 string rawPrice = JObject.Parse(response).SelectToken("c").ToString();
+
                 Quote newquote = new Quote
                 {
                     Company = company,
@@ -38,6 +40,7 @@ namespace QuotesExchangeApp.Jobs
                     Date = DateTime.Now,
                     Source = sourceFinnhub
                 };
+
                 _context.Quotes.Add(newquote);
                 await Task.Delay(500);
             }
