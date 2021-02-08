@@ -16,7 +16,6 @@ namespace QuotesExchangeApp.Pages
         //{
         //    this._userManager = userManager;
         //}
-
         public void OnGet()
         {
             //CreateRole(); //Создание роли

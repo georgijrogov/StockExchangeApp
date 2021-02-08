@@ -7,22 +7,38 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <script src="js/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <title>Index</title>
 </head>
 <body>
     <script type="text/javascript">
-        window.onload = function () {
+        async function GetAnyQuotes(min, name) {
+            const response = await fetch("api/chart", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Min: min,
+                    Name: name,
+                })
+            });
+            return await response.json()
+                .then((data) => {
+                    const result = JSON.parse(data);
+                    buildCharts(result);
+                });
+        }
+
+        function buildCharts(data) {
             CanvasJS.addColorSet("YelowSet",
                 [
                     "#f0b90b"
                 ]);
 
-            const quotes = @Html.Raw(Model.Json);
             const chart = new CanvasJS.Chart("chartContainer", {
                 colorSet: "YelowSet",
                 theme: "light2",
-                animationEnabled: true,
+                animationEnabled: false,
                 zoomEnabled: true,
                 title: {
                     text: "График цен"
@@ -33,16 +49,55 @@
                 }]
             });
 
-            chart.options.data[0].dataPoints = quotes.map(function (quote) {
+            chart.options.data[0].dataPoints = data.map(function (quote) {
                 return { x: new Date(quote.QuoteDate), y: quote.QuotePrice }
             })
             chart.render();
+        }
+        window.onload = function () {
+            sessionStorage.setItem("name", "@ChartModel.CurrentCompany?.Name");
+            sessionStorage.setItem("ticker", "@ChartModel.CurrentCompany?.Ticker");
+            sessionStorage.setItem("time", 1440);
 
+            const hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/signalr")
+                .build();
+
+            hubConnection.on("Notify", function (data) {
+                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+            });
+
+            hubConnection.start();
+
+            GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+
+            const timeForms = document.querySelectorAll(".form-ticker");
+            timeForms.forEach((timeForm) => timeForm.addEventListener("submit", e => {
+                e.preventDefault();
+                sessionStorage.setItem("time", timeForm.elements["min"].value);
+
+                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+            }));
+
+            const companyForms = document.querySelectorAll(".form-ticker-right");
+            companyForms.forEach((companyForm) => companyForm.addEventListener("submit", e => {
+                e.preventDefault();
+                sessionStorage.setItem("name", companyForm.elements["companyName"].value);
+                sessionStorage.setItem("ticker", companyForm.elements["ticker"].value);
+                document.getElementById("companyNameTicker").innerHTML = "Акции " + sessionStorage.getItem("name") + " (" + sessionStorage.getItem("ticker") + ")";
+
+                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name")); 
+            }));
         }
     </script>
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Отправить" />
+    </div>
+    <div id="chatroom"></div>
     <div class="row">
         <div class="col-sm-8 div-custom shadow">
-            <h3>Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
+            <h3 id="companyNameTicker">Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
             <div>
                 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
                 <div class="col-xs-12">
@@ -50,7 +105,7 @@
                     {
                         <div class="col-xs-3">
                             <a>
-                                <form method="POST" class="form form-ticker">
+                                <form method="POST" class="form form-ticker" name="userForm">
                                     <input type="submit" asp-page-handler="Custom" value="@span.Key" />
                                     <input type="hidden" value="@span.Value" name="min" />
                                 </form>
@@ -71,8 +126,9 @@
                         <tr>
                             <td>
                                 <form class="form-ticker-right" method="POST">
-                                    <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" />
+                                    <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" name="ticker" />
                                     <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
+                                    <input type="hidden" value="@res.CompanyName.ToString()" name="companyName" />
                                 </form>
                             </td>
                             <td>@res.QuotePrice $</td>

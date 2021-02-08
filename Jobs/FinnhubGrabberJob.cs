@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Quartz;
+using QuotesExchangeApp.Controllers;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using System;
@@ -17,11 +19,13 @@ namespace QuotesExchangeApp.Jobs
         public List<Company> Companies { get; set; }
         private readonly string finnhubSourceName = "Finnhub";
         private readonly IConfiguration Configuration;
+        IHubContext<ChartHub> hubContext;
         private readonly ApplicationDbContext _context;
-        public FinnhubGrabberJob(ApplicationDbContext db, IConfiguration configuration)
+        public FinnhubGrabberJob(ApplicationDbContext db, IConfiguration configuration, IHubContext<ChartHub> hubContext)
         {
             _context = db;
             Configuration = configuration;
+            this.hubContext = hubContext;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -45,6 +49,7 @@ namespace QuotesExchangeApp.Jobs
                 await Task.Delay(500);
             }
             await _context.SaveChangesAsync();
+            await hubContext.Clients.All.SendAsync("Notify", $"Добавлено: - {DateTime.Now.ToShortTimeString()}");
         }
     }
 }

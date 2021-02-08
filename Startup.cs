@@ -12,6 +12,7 @@ using System;
 using Quartz.Spi;
 using QuotesExchangeApp.Jobs;
 using QuotesExchangeApp.Quartz;
+using QuotesExchangeApp.Controllers;
 
 namespace QuotesExchangeApp
 {
@@ -61,6 +62,8 @@ namespace QuotesExchangeApp
                 return scheduler;
             });
             services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
+            services.AddMvc();
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
@@ -80,12 +83,16 @@ namespace QuotesExchangeApp
 
             app.UseRouting();
 
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChartHub>("/signalr");
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
