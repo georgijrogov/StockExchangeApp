@@ -23,7 +23,7 @@ namespace QuotesExchangeApp.Controllers
         }
         // GET: api/<HomeController>
         [HttpPost]
-        public string Post(IncomingValue incomingValue)
+        public string PostQuotes(IncomingValue incomingValue)
         {
             var company = _context.Companies.FirstOrDefault(x => x.Name == incomingValue.Name);
             var res = _context.Quotes.Include(x => x.Company)
@@ -33,6 +33,22 @@ namespace QuotesExchangeApp.Controllers
                     QuotePrice = x.Price,
                     QuoteDate = x.Date
                 }).ToList();
+            return JsonConvert.SerializeObject(res);
+        }
+        [HttpGet("companies")]
+        public string PostCompanies()
+        {
+            var companies = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
+            var res = (from quote in companies.ToList()
+                       select new Result
+                       {
+                           QuoteId = quote.Id,
+                           CompanyId = quote.Company.Id,
+                           CompanyName = quote.Company.Name,
+                           CompanyTicker = quote.Company.Ticker,
+                           QuotePrice = quote.Price,
+                           QuoteDate = quote.Date,
+                       }).ToList();
             return JsonConvert.SerializeObject(res);
         }
     }

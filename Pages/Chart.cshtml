@@ -13,7 +13,16 @@
 </head>
 <body>
     <script type="text/javascript">
-        async function GetAnyQuotes(min, name) {
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/signalr")
+            .build();
+
+        hubConnection.on("Notify", function (data) {
+            AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+            AddCompanies();
+        });
+
+        async function AddQuotes(min, name) {
             const response = await fetch("api/chart", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -26,6 +35,18 @@
                 .then((data) => {
                     const result = JSON.parse(data);
                     buildCharts(result);
+                });
+        }
+
+        async function AddCompanies() {
+            const response = await fetch("api/chart/companies", {
+                method: "GET",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" }
+            });
+            return await response.json()
+                .then((data) => {
+                    const result = JSON.parse(data);
+                    buildCompanies(result);
                 });
         }
 
@@ -54,29 +75,32 @@
             })
             chart.render();
         }
+
+        function buildCompanies(data) {
+            const quotePrices = document.querySelectorAll(".quotePrice");
+            const quoteDates = document.querySelectorAll(".quoteDate");
+
+            for (var i = 0; i < quotePrices.length; i++) {
+                quotePrices[i].innerHTML = data[i]["QuotePrice"] + " $";
+                quoteDates[i].innerHTML = data[i]["QuoteDate"];
+            }
+        }
+
         window.onload = function () {
             sessionStorage.setItem("name", "@ChartModel.CurrentCompany?.Name");
             sessionStorage.setItem("ticker", "@ChartModel.CurrentCompany?.Ticker");
             sessionStorage.setItem("time", 1440);
 
-            const hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl("/signalr")
-                .build();
-
-            hubConnection.on("Notify", function (data) {
-                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
-            });
-
             hubConnection.start();
 
-            GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+            AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
 
             const timeForms = document.querySelectorAll(".form-ticker");
             timeForms.forEach((timeForm) => timeForm.addEventListener("submit", e => {
                 e.preventDefault();
                 sessionStorage.setItem("time", timeForm.elements["min"].value);
 
-                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+                AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
             }));
 
             const companyForms = document.querySelectorAll(".form-ticker-right");
@@ -86,7 +110,7 @@
                 sessionStorage.setItem("ticker", companyForm.elements["ticker"].value);
                 document.getElementById("companyNameTicker").innerHTML = "Акции " + sessionStorage.getItem("name") + " (" + sessionStorage.getItem("ticker") + ")";
 
-                GetAnyQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name")); 
+                AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name")); 
             }));
         }
     </script>
@@ -131,8 +155,8 @@
                                     <input type="hidden" value="@res.CompanyName.ToString()" name="companyName" />
                                 </form>
                             </td>
-                            <td>@res.QuotePrice $</td>
-                            <td>@res.QuoteDate</td>
+                            <td class="quotePrice">@res.QuotePrice $</td>
+                            <td class="quoteDate">@res.QuoteDate</td>
                         </tr>
                     }
                 </tbody>
