@@ -18,16 +18,16 @@
             .build();
 
         hubConnection.on("Notify", function (data) {
-            AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
-            AddCompanies();
+            addQuotes(sessionStorage.getItem("time"), sessionStorage.getItem("name"));
+            addCompanies();
         });
 
-        async function AddQuotes(min, name) {
-            const response = await fetch("api/chart", {
+        async function addQuotes(min, name) {
+            const response = await fetch("api/chart/quotes", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    Min: min,
+                    Min: parseInt(min),
                     Name: name,
                 })
             });
@@ -38,7 +38,7 @@
                 });
         }
 
-        async function AddCompanies() {
+        async function addCompanies() {
             const response = await fetch("api/chart/companies", {
                 method: "GET",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" }
@@ -51,13 +51,7 @@
         }
 
         function buildCharts(data) {
-            CanvasJS.addColorSet("YelowSet",
-                [
-                    "#f0b90b"
-                ]);
-
             const chart = new CanvasJS.Chart("chartContainer", {
-                colorSet: "YelowSet",
                 theme: "light2",
                 animationEnabled: false,
                 zoomEnabled: true,
@@ -66,7 +60,8 @@
                 },
                 data: [{
                     type: "area",
-                    dataPoints: []
+                    dataPoints: [],
+                    color: "#f0b90b"
                 }]
             });
 
@@ -82,8 +77,13 @@
 
             for (var i = 0; i < quotePrices.length; i++) {
                 quotePrices[i].innerHTML = data[i]["QuotePrice"] + " $";
-                quoteDates[i].innerHTML = data[i]["QuoteDate"];
+                const date = new Date(data[i]["QuoteDate"]);
+                quoteDates[i].innerHTML = formatDate(date);
             }
+        }
+
+        function formatDate(date) {
+            return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
         }
 
         window.onload = function () {
@@ -93,32 +93,30 @@
 
             hubConnection.start();
 
-            AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+            addQuotes(sessionStorage.getItem("time"), sessionStorage.getItem("name"));
 
             const timeForms = document.querySelectorAll(".form-ticker");
             timeForms.forEach((timeForm) => timeForm.addEventListener("submit", e => {
                 e.preventDefault();
-                sessionStorage.setItem("time", timeForm.elements["min"].value);
-
-                AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name"));
+                const time = timeForm.elements["min"].value;
+                const name = sessionStorage.getItem("name")
+                sessionStorage.setItem("time", time);
+                addQuotes(time, name);
             }));
 
             const companyForms = document.querySelectorAll(".form-ticker-right");
             companyForms.forEach((companyForm) => companyForm.addEventListener("submit", e => {
                 e.preventDefault();
-                sessionStorage.setItem("name", companyForm.elements["companyName"].value);
-                sessionStorage.setItem("ticker", companyForm.elements["ticker"].value);
-                document.getElementById("companyNameTicker").innerHTML = "Акции " + sessionStorage.getItem("name") + " (" + sessionStorage.getItem("ticker") + ")";
-
-                AddQuotes(parseInt(sessionStorage.getItem("time")), sessionStorage.getItem("name")); 
+                const name = companyForm.elements["companyName"].value;
+                const ticker = companyForm.elements["ticker"].value;
+                const time = sessionStorage.getItem("time");
+                sessionStorage.setItem("name", name);
+                sessionStorage.setItem("ticker", ticker);
+                document.getElementById("companyNameTicker").innerHTML = `Акции ${name} (${ticker})`;
+                addQuotes(time, name); 
             }));
         }
     </script>
-    <div id="inputForm">
-        <input type="text" id="message" />
-        <input type="button" id="sendBtn" value="Отправить" />
-    </div>
-    <div id="chatroom"></div>
     <div class="row">
         <div class="col-sm-8 div-custom shadow">
             <h3 id="companyNameTicker">Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>

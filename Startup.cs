@@ -12,7 +12,9 @@ using System;
 using Quartz.Spi;
 using QuotesExchangeApp.Jobs;
 using QuotesExchangeApp.Quartz;
-using QuotesExchangeApp.Controllers;
+using QuotesExchangeApp.Hubs;
+using QuotesExchangeApp.Services.Interfaces;
+using QuotesExchangeApp.Services;
 
 namespace QuotesExchangeApp
 {
@@ -64,6 +66,8 @@ namespace QuotesExchangeApp
             services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
             services.AddMvc();
             services.AddSignalR();
+            services.AddTransient<ICompaniesService, CompaniesService>();
+            services.AddTransient<IQuotesService, QuotesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

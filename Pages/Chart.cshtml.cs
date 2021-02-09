@@ -34,33 +34,6 @@ namespace QuotesExchangeApp.Pages
         public void OnGet()
         {
             CurrentCompany = _context.Companies.FirstOrDefault();
-            if (CurrentCompany != null)
-            {
-                TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
-            }
-        }
-
-        public void OnPostMain(Guid idCompany)
-        {
-            TakeQuotes(1440, idCompany);
-        }
-
-        public void OnPostCustom(int min)
-        {
-            TakeQuotes(min, CurrentCompany.Id);
-        }
-
-        public void TakeQuotes(int min, Guid idCompany)
-        {
-            CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == idCompany);
-            var res = _context.Quotes.Include(x => x.Company)
-                .Where(x => x.Company.Id == idCompany && x.Date > DateTime.Now.AddMinutes(-min)).ToList()
-                .OrderBy(x => x.Date)
-                .Select(x => new {
-                    QuotePrice = x.Price,
-                    QuoteDate = x.Date
-                }).ToList();
-            Json = JsonConvert.SerializeObject(res);
             TakeCompaniesList();
         }
 
@@ -75,7 +48,7 @@ namespace QuotesExchangeApp.Pages
                            CompanyName = quote.Company.Name,
                            CompanyTicker = quote.Company.Ticker,
                            QuotePrice = quote.Price,
-                           QuoteDate = quote.Date,
+                           QuoteDate = quote.Date
                        }).ToList();
         }
     }

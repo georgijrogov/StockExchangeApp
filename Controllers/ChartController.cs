@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
+using QuotesExchangeApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,40 +17,23 @@ namespace QuotesExchangeApp.Controllers
     [ApiController]
     public class ChartController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public ChartController(ApplicationDbContext db)
+        private readonly ICompaniesService _companiesManager;
+        private readonly IQuotesService _quotesService;
+        public ChartController(ICompaniesService companiesManager, IQuotesService quotesService)
         {
-            _context = db;
+            _companiesManager = companiesManager;
+            _quotesService = quotesService;
         }
         // GET: api/<HomeController>
-        [HttpPost]
+        [HttpPost("quotes")]
         public string PostQuotes(IncomingValue incomingValue)
         {
-            var company = _context.Companies.FirstOrDefault(x => x.Name == incomingValue.Name);
-            var res = _context.Quotes.Include(x => x.Company)
-                .Where(x => x.Company.Id == company.Id && x.Date > DateTime.Now.AddMinutes(-incomingValue.Min)).ToList()
-                .OrderBy(x => x.Date)
-                .Select(x => new {
-                    QuotePrice = x.Price,
-                    QuoteDate = x.Date
-                }).ToList();
-            return JsonConvert.SerializeObject(res);
+            return _quotesService.GetQuotes(incomingValue.Name, incomingValue.Min);
         }
         [HttpGet("companies")]
         public string PostCompanies()
         {
-            var companies = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
-            var res = (from quote in companies.ToList()
-                       select new Result
-                       {
-                           QuoteId = quote.Id,
-                           CompanyId = quote.Company.Id,
-                           CompanyName = quote.Company.Name,
-                           CompanyTicker = quote.Company.Ticker,
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date,
-                       }).ToList();
-            return JsonConvert.SerializeObject(res);
+            return _companiesManager.GetCompanies();
         }
     }
 }
