@@ -5,16 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz.Impl;
-using Quartz;
 using QuotesExchangeApp.Data;
-using System;
-using Quartz.Spi;
-using QuotesExchangeApp.Jobs;
-using QuotesExchangeApp.Quartz;
 using QuotesExchangeApp.Hubs;
 using QuotesExchangeApp.Services.Interfaces;
 using QuotesExchangeApp.Services;
+using QuotesExchangeApp.Models;
 
 namespace QuotesExchangeApp
 {
@@ -34,6 +29,9 @@ namespace QuotesExchangeApp
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.Configure<FinnhubOptions>(options => Configuration.GetSection("Finnhub").Bind(options));
+
             services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizePage("/Properties", "RequireAdministratorRole");
@@ -47,30 +45,16 @@ namespace QuotesExchangeApp
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin"));
             });
-            services.AddDirectoryBrowser();
-            services.AddSingleton<IJobFactory, JobFactory>();
 
-            services.Add(new ServiceDescriptor(typeof(FinnhubGrabberJob), typeof(FinnhubGrabberJob), ServiceLifetime.Transient));
-            services.Add(new ServiceDescriptor(typeof(MoexGrabberJob), typeof(MoexGrabberJob), ServiceLifetime.Transient));
+            services.ConfigureQuartz();
 
-            services.AddSingleton(provider =>
-            {
-                var schedulerFactory = new StdSchedulerFactory();
-                var scheduler = schedulerFactory.GetScheduler().Result;
-                scheduler.JobFactory = provider.GetService<IJobFactory>();
-
-                scheduler.Start();
-
-                return scheduler;
-            });
-            services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
             services.AddMvc();
             services.AddSignalR();
             services.AddTransient<ICompaniesService, CompaniesService>();
             services.AddTransient<IQuotesService, QuotesService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -82,11 +66,10 @@ namespace QuotesExchangeApp
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
-
 
             app.UseAuthentication();
             app.UseAuthorization();

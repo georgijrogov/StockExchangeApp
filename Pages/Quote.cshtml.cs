@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuotesExchangeApp.Data;
@@ -12,16 +13,16 @@ namespace QuotesExchangeApp.Pages
     public class QuoteModel : PageModel
     {
         private readonly IQuotesService _quotesService;
-        public IEnumerable<Result> Results { get; set; }
+        public IEnumerable<DetaledCompany> Results { get; set; }
 
         public QuoteModel(IQuotesService quotesService)
         {
             _quotesService = quotesService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            Results = _quotesService.GetCompaniesQuotes();
+            Results = await _quotesService.GetCompaniesQuotes();
         }
     }
 }

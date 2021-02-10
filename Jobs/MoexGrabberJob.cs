@@ -45,7 +45,7 @@ namespace QuotesExchangeApp.Jobs
                 var response = new WebClient().DownloadString(sourceMOEX.ApiUrl + company.Ticker + ".json");
 
                 dynamic moex = JObject.Parse(response);
-                string moexstring = moex.marketdata.data[2][12];
+                string moexstring = moex.marketdata.data[2][12]; //Цена за акцию
                 float rawPrice = float.Parse(moexstring.Replace(".", ","));
                 float price = rawPrice * multiplier; //Перевод из рублей в доллары
 

@@ -17,7 +17,7 @@
             .withUrl("/signalr")
             .build();
 
-        hubConnection.on("Notify", function (data) {
+        hubConnection.on("Notify", function () {
             addQuotes(sessionStorage.getItem("time"), sessionStorage.getItem("name"));
             addCompanies();
         });
@@ -33,8 +33,7 @@
             });
             return await response.json()
                 .then((data) => {
-                    const result = JSON.parse(data);
-                    buildCharts(result);
+                    buildCharts(data);
                 });
         }
 
@@ -45,12 +44,14 @@
             });
             return await response.json()
                 .then((data) => {
-                    const result = JSON.parse(data);
-                    buildCompanies(result);
+                    buildCompanies(data);
                 });
         }
 
         function buildCharts(data) {
+            const quotes = data.map(function (quote) {
+                return { x: new Date(quote.date), y: quote.price }
+            })
             const chart = new CanvasJS.Chart("chartContainer", {
                 theme: "light2",
                 animationEnabled: false,
@@ -60,14 +61,11 @@
                 },
                 data: [{
                     type: "area",
-                    dataPoints: [],
+                    dataPoints: quotes,
                     color: "#f0b90b"
                 }]
             });
 
-            chart.options.data[0].dataPoints = data.map(function (quote) {
-                return { x: new Date(quote.QuoteDate), y: quote.QuotePrice }
-            })
             chart.render();
         }
 
@@ -76,14 +74,26 @@
             const quoteDates = document.querySelectorAll(".quoteDate");
 
             for (var i = 0; i < quotePrices.length; i++) {
-                quotePrices[i].innerHTML = data[i]["QuotePrice"] + " $";
-                const date = new Date(data[i]["QuoteDate"]);
+                quotePrices[i].innerHTML = data[i]["quotePrice"] + " $";
+                const date = new Date(data[i]["quoteDate"]);
                 quoteDates[i].innerHTML = formatDate(date);
             }
         }
 
         function formatDate(date) {
-            return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+            let currentDay = date.getDate();
+            let currentMonth = date.getMonth() + 1;
+            let currentHour = date.getHours();
+            let currentMin = date.getMinutes();
+            let currentSec = date.getSeconds();
+
+            if (currentDay < 10) { currentDay = '0' + currentDay; }
+            if (currentMonth < 10) { currentMonth = '0' + currentMonth; }
+            if (currentHour < 10) { currentHour = '0' + currentHour; }
+            if (currentMin < 10) { currentMin = '0' + currentMin; }
+            if (currentSec < 10) { currentSec = '0' + currentSec; }
+
+            return `${currentDay}.${currentMonth}.${date.getFullYear()} ${currentHour}:${currentMin}:${currentSec}`;
         }
 
         window.onload = function () {
@@ -118,7 +128,7 @@
         }
     </script>
     <div class="row">
-        <div class="col-sm-8 div-custom shadow">
+        <div class="col-sm-8 shadow">
             <h3 id="companyNameTicker">Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
             <div>
                 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
@@ -137,7 +147,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 div-custom shadow">
+        <div class="col-sm-4 shadow">
             <table class="table custom-table">
                 <thead>
                     <tr><th>Тикер</th><th>Цена</th><th>Дата</th></tr>

@@ -1,12 +1,11 @@
-﻿using System;
+﻿using QuotesExchangeApp.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace QuotesExchangeApp.Services.Interfaces
 {
     public interface ICompaniesService
     {
-        public string GetCompanies();
+        public Task<IEnumerable<DetaledCompany>> GetCompanies();
     }
 }

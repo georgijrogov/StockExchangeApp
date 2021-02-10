@@ -11,21 +11,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace QuotesExchangeApp.Jobs
 {
     public class FinnhubGrabberJob : IJob
     {
         public List<Company> Companies { get; set; }
+        private readonly FinnhubOptions _finnhubOptions;
         private readonly string finnhubSourceName = "Finnhub";
-        private readonly IConfiguration Configuration;
         IHubContext<ChartHub> hubContext;
         private readonly ApplicationDbContext _context;
-        public FinnhubGrabberJob(ApplicationDbContext db, IConfiguration configuration, IHubContext<ChartHub> hubContext)
+        public FinnhubGrabberJob(ApplicationDbContext db, IConfiguration configuration, IHubContext<ChartHub> hubContext, IOptions<FinnhubOptions> finnhubOptions)
         {
             _context = db;
-            Configuration = configuration;
             this.hubContext = hubContext;
+            _finnhubOptions = finnhubOptions.Value;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -34,7 +35,7 @@ namespace QuotesExchangeApp.Jobs
             var finnhubCompanies = _context.SupportedCompanies.Include(x => x.Company).Where(x => x.Source.Name == finnhubSourceName).Select(x => x.Company);
             foreach (var company in finnhubCompanies)
             {
-                string response = new WebClient().DownloadString(sourceFinnhub.ApiUrl + company.Ticker + Configuration["FinnhubToken"]);
+                string response = new WebClient().DownloadString(sourceFinnhub.ApiUrl + company.Ticker + _finnhubOptions.Token);
                 string rawPrice = JObject.Parse(response).SelectToken("c").ToString();
 
                 Quote newquote = new Quote
@@ -49,7 +50,7 @@ namespace QuotesExchangeApp.Jobs
                 await Task.Delay(500);
             }
             await _context.SaveChangesAsync();
-            await hubContext.Clients.All.SendAsync("Notify", $"Добавлено: - {DateTime.Now.ToShortTimeString()}");
+            await hubContext.Clients.All.SendAsync("Notify");
         }
     }
 }

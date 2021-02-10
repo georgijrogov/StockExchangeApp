@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 
@@ -23,8 +22,7 @@ namespace QuotesExchangeApp.Pages
             { "Макс.", 10000000 }
         };
         public static Company CurrentCompany { get; set; }
-        public List<Result> Results { get; set; }
-        public string Json { get; set; }
+        public List<DetaledCompany> Results { get; set; }
         private readonly ApplicationDbContext _context;
         public ChartModel(ApplicationDbContext db)
         {
@@ -41,7 +39,7 @@ namespace QuotesExchangeApp.Pages
         {
             var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
             Results = (from quote in res.ToList()
-                       select new Result
+                       select new DetaledCompany
                        {
                            QuoteId = quote.Id,
                            CompanyId = quote.Company.Id,

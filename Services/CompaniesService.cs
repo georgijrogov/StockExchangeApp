@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using QuotesExchangeApp.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,20 +16,19 @@ namespace QuotesExchangeApp.Services
         {
             _context = db;
         }
-        public string GetCompanies()
+        public async Task<IEnumerable<DetaledCompany>> GetCompanies()
         {
-            var companies = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
-            var res = (from quote in companies.ToList()
-                       select new Result
-                       {
-                           QuoteId = quote.Id,
-                           CompanyId = quote.Company.Id,
-                           CompanyName = quote.Company.Name,
-                           CompanyTicker = quote.Company.Ticker,
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date
-                       }).ToList();
-            return JsonConvert.SerializeObject(res);
+            var companies = await _context.Quotes.Include(x => x.Company).ToListAsync();
+            return companies.GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First()).Select(quote => 
+                new DetaledCompany
+                {
+                    QuoteId = quote.Id,
+                    CompanyId = quote.Company.Id,
+                    CompanyName = quote.Company.Name,
+                    CompanyTicker = quote.Company.Ticker,
+                    QuotePrice = quote.Price,
+                    QuoteDate = quote.Date
+                });
         }
     }
 }

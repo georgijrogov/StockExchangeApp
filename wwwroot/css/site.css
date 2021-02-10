@@ -132,12 +132,9 @@ a:hover {
     padding: 10px
 }
 
-.custom-table{
-    background-color: #fff;
-}
-
 .table-company {
     table-layout: fixed;
+    background-color: #fff;
 }
 .company-name-col {
     width: 20%;
