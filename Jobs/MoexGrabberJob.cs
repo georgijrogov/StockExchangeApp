@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using QuotesExchangeApp.Data;
@@ -17,11 +16,9 @@ namespace QuotesExchangeApp.Jobs
         private readonly string moexSourceName = "MOEX";
         public List<Company> Companies { get; set; }
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration Configuration;
-        public MoexGrabberJob(ApplicationDbContext db, IConfiguration configuration)
+        public MoexGrabberJob(ApplicationDbContext db)
         {
             _context = db;
-            Configuration = configuration;
         }
 
         private float GetCurrencyMultiplier()
