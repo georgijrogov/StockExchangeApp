@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,7 @@ namespace QuotesExchangeApp.Pages
     {
         private readonly ApplicationDbContext _context;
         public IEnumerable<Company> Companies { get; set; }
+
         public CompanyModel(ApplicationDbContext db)
         {
             _context = db;

@@ -31,6 +31,7 @@
                     Name: name,
                 })
             });
+            if (response.ok)
             return await response.json()
                 .then((data) => {
                     buildCharts(data);
@@ -42,6 +43,7 @@
                 method: "GET",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" }
             });
+            if (response.ok)
             return await response.json()
                 .then((data) => {
                     buildCompanies(data);
@@ -52,6 +54,7 @@
             const quotes = data.map(function (quote) {
                 return { x: new Date(quote.date), y: quote.price }
             })
+
             const chart = new CanvasJS.Chart("chartContainer", {
                 theme: "light2",
                 animationEnabled: false,
@@ -110,7 +113,9 @@
                 e.preventDefault();
                 const time = timeForm.elements["min"].value;
                 const name = sessionStorage.getItem("name")
+
                 sessionStorage.setItem("time", time);
+
                 addQuotes(time, name);
             }));
 
@@ -120,8 +125,10 @@
                 const name = companyForm.elements["companyName"].value;
                 const ticker = companyForm.elements["ticker"].value;
                 const time = sessionStorage.getItem("time");
+
                 sessionStorage.setItem("name", name);
                 sessionStorage.setItem("ticker", ticker);
+
                 document.getElementById("companyNameTicker").innerHTML = `Акции ${name} (${ticker})`;
                 addQuotes(time, name); 
             }));

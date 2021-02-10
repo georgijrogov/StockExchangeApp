@@ -30,8 +30,6 @@ namespace QuotesExchangeApp
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.Configure<FinnhubOptions>(options => Configuration.GetSection("Finnhub").Bind(options));
-
             services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizePage("/Properties", "RequireAdministratorRole");
@@ -41,11 +39,13 @@ namespace QuotesExchangeApp
                 options.Conventions.AuthorizePage("/Index");
 
             });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("admin"));
             });
 
+            services.Configure<FinnhubOptions>(options => Configuration.GetSection("Finnhub").Bind(options));
             services.ConfigureQuartz();
 
             services.AddMvc();

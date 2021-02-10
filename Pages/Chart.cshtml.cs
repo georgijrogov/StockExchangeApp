@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuotesExchangeApp.Data;
@@ -22,32 +23,32 @@ namespace QuotesExchangeApp.Pages
             { "Макс.", 10000000 }
         };
         public static Company CurrentCompany { get; set; }
-        public List<DetaledCompany> Results { get; set; }
+        public IEnumerable<DetaledCompany> Results { get; set; }
         private readonly ApplicationDbContext _context;
         public ChartModel(ApplicationDbContext db)
         {
             _context = db;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            CurrentCompany = _context.Companies.FirstOrDefault();
-            TakeCompaniesList();
+            CurrentCompany = await _context.Companies.FirstOrDefaultAsync();
+            await TakeCompaniesList();
         }
 
-        public void TakeCompaniesList()
+        public async Task TakeCompaniesList()
         {
-            var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
-            Results = (from quote in res.ToList()
-                       select new DetaledCompany
-                       {
-                           QuoteId = quote.Id,
-                           CompanyId = quote.Company.Id,
-                           CompanyName = quote.Company.Name,
-                           CompanyTicker = quote.Company.Ticker,
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date
-                       }).ToList();
+            var res = await _context.Quotes.Include(x => x.Company).ToListAsync();
+            Results = res.GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First()).Select(quote =>
+                new DetaledCompany
+                {
+                    QuoteId = quote.Id,
+                    CompanyId = quote.Company.Id,
+                    CompanyName = quote.Company.Name,
+                    CompanyTicker = quote.Company.Ticker,
+                    QuotePrice = quote.Price,
+                    QuoteDate = quote.Date
+                });
         }
     }
 }

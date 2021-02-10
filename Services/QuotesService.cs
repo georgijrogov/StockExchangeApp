@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using QuotesExchangeApp.Services.Interfaces;
@@ -17,6 +16,7 @@ namespace QuotesExchangeApp.Services
         {
             _context = db;
         }
+
         public async Task<IEnumerable<Quote>> GetQuotes(string companyName, int minSpan)
         {
             var company = await _context.Companies.FirstOrDefaultAsync(x => x.Name == companyName);
@@ -29,6 +29,7 @@ namespace QuotesExchangeApp.Services
                     Date = x.Date
                 });
         }
+
         public async Task<IEnumerable<DetaledCompany>> GetCompaniesQuotes()
         {
             var res = await _context.Quotes.Include(x => x.Company).ToListAsync();

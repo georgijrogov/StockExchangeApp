@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 using QuotesExchangeApp.Services.Interfaces;
@@ -16,6 +15,7 @@ namespace QuotesExchangeApp.Services
         {
             _context = db;
         }
+
         public async Task<IEnumerable<DetaledCompany>> GetCompanies()
         {
             var companies = await _context.Quotes.Include(x => x.Company).ToListAsync();

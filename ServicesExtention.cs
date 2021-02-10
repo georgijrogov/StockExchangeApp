@@ -26,6 +26,7 @@ namespace QuotesExchangeApp
 
                 return scheduler;
             });
+
             services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
         }
     }
