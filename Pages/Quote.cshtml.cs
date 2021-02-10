@@ -1,34 +1,24 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
+using QuotesExchangeApp.Services.Interfaces;
 
 namespace QuotesExchangeApp.Pages
 {
     public class QuoteModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
-        public IEnumerable<Result> Results { get; set; }
-        public QuoteModel(ApplicationDbContext db)
+        private readonly IQuotesService _quotesService;
+        public IEnumerable<DetaledCompany> Results { get; set; }
+
+        public QuoteModel(IQuotesService quotesService)
         {
-            _context = db;
+            _quotesService = quotesService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
-            Results = (from quote in res.ToList()
-                       select new Result
-                       {
-                           QuoteId = quote.Id,
-                           CompanyId = quote.Company.Id,
-                           CompanyName = quote.Company.Name,
-                           CompanyTicker = quote.Company.Ticker,
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date,
-                       }).ToList();
+            Results = await _quotesService.GetCompaniesQuotes();
         }
     }
 }

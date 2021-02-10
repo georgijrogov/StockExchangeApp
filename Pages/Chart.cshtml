@@ -7,42 +7,136 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <script src="js/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <title>Index</title>
 </head>
 <body>
     <script type="text/javascript">
-        window.onload = function () {
-            CanvasJS.addColorSet("YelowSet",
-                [
-                    "#f0b90b"
-                ]);
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/signalr")
+            .build();
 
-            const quotes = @Html.Raw(Model.Json);
+        hubConnection.on("Notify", function () {
+            addQuotes(sessionStorage.getItem("time"), sessionStorage.getItem("name"));
+            addCompanies();
+        });
+
+        async function addQuotes(min, name) {
+            const response = await fetch("api/chart/quotes", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Min: parseInt(min),
+                    Name: name,
+                })
+            });
+            if (response.ok)
+            return await response.json()
+                .then((data) => {
+                    buildCharts(data);
+                });
+        }
+
+        async function addCompanies() {
+            const response = await fetch("api/chart/companies", {
+                method: "GET",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" }
+            });
+            if (response.ok)
+            return await response.json()
+                .then((data) => {
+                    buildCompanies(data);
+                });
+        }
+
+        function buildCharts(data) {
+            const quotes = data.map(function (quote) {
+                return { x: new Date(quote.date), y: quote.price }
+            })
+
             const chart = new CanvasJS.Chart("chartContainer", {
-                colorSet: "YelowSet",
                 theme: "light2",
-                animationEnabled: true,
+                animationEnabled: false,
                 zoomEnabled: true,
                 title: {
                     text: "График цен"
                 },
                 data: [{
                     type: "area",
-                    dataPoints: []
+                    dataPoints: quotes,
+                    color: "#f0b90b"
                 }]
             });
 
-            chart.options.data[0].dataPoints = quotes.map(function (quote) {
-                return { x: new Date(quote.QuoteDate), y: quote.QuotePrice }
-            })
             chart.render();
+        }
 
+        function buildCompanies(data) {
+            const quotePrices = document.querySelectorAll(".quotePrice");
+            const quoteDates = document.querySelectorAll(".quoteDate");
+
+            for (var i = 0; i < quotePrices.length; i++) {
+                quotePrices[i].innerHTML = data[i]["quotePrice"] + " $";
+                const date = new Date(data[i]["quoteDate"]);
+                quoteDates[i].innerHTML = formatDate(date);
+            }
+        }
+
+        function formatDate(date) {
+            let currentDay = date.getDate();
+            let currentMonth = date.getMonth() + 1;
+            let currentHour = date.getHours();
+            let currentMin = date.getMinutes();
+            let currentSec = date.getSeconds();
+
+            if (currentDay < 10) { currentDay = '0' + currentDay; }
+            if (currentMonth < 10) { currentMonth = '0' + currentMonth; }
+            if (currentHour < 10) { currentHour = '0' + currentHour; }
+            if (currentMin < 10) { currentMin = '0' + currentMin; }
+            if (currentSec < 10) { currentSec = '0' + currentSec; }
+
+            return `${currentDay}.${currentMonth}.${date.getFullYear()} ${currentHour}:${currentMin}:${currentSec}`;
+        }
+
+        window.onload = function () {
+            sessionStorage.setItem("name", "@ChartModel.CurrentCompany?.Name");
+            sessionStorage.setItem("ticker", "@ChartModel.CurrentCompany?.Ticker");
+            sessionStorage.setItem("time", 1440);
+
+            hubConnection.start();
+
+            addQuotes(sessionStorage.getItem("time"), sessionStorage.getItem("name"));
+
+            const timeForms = document.querySelectorAll(".form-ticker");
+            timeForms.forEach((timeForm) => timeForm.addEventListener("submit", e => {
+                e.preventDefault();
+                const time = timeForm.elements["min"].value;
+                const name = sessionStorage.getItem("name")
+
+                sessionStorage.setItem("time", time);
+
+                addQuotes(time, name);
+            }));
+
+            const companyForms = document.querySelectorAll(".form-ticker-right");
+            companyForms.forEach((companyForm) => companyForm.addEventListener("submit", e => {
+                e.preventDefault();
+                const name = companyForm.elements["companyName"].value;
+                const ticker = companyForm.elements["ticker"].value;
+                const time = sessionStorage.getItem("time");
+
+                sessionStorage.setItem("name", name);
+                sessionStorage.setItem("ticker", ticker);
+
+                document.getElementById("companyNameTicker").innerHTML = `Акции ${name} (${ticker})`;
+                addQuotes(time, name); 
+            }));
         }
     </script>
     <div class="row">
-        <div class="col-sm-8 div-custom shadow">
-            <h3>Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
+        <div class="col-sm-8 shadow">
+            <h3 id="companyNameTicker">Акции @ChartModel.CurrentCompany?.Name (@ChartModel.CurrentCompany?.Ticker)</h3>
             <div>
                 <div id="chartContainer" style="height: 300px; width: 100%;"></div>
                 <div class="col-xs-12">
@@ -50,7 +144,7 @@
                     {
                         <div class="col-xs-3">
                             <a>
-                                <form method="POST" class="form form-ticker">
+                                <form method="POST" class="form form-ticker" name="userForm">
                                     <input type="submit" asp-page-handler="Custom" value="@span.Key" />
                                     <input type="hidden" value="@span.Value" name="min" />
                                 </form>
@@ -60,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 div-custom shadow">
+        <div class="col-sm-4 shadow">
             <table class="table custom-table">
                 <thead>
                     <tr><th>Тикер</th><th>Цена</th><th>Дата</th></tr>
@@ -71,12 +165,13 @@
                         <tr>
                             <td>
                                 <form class="form-ticker-right" method="POST">
-                                    <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" />
+                                    <input type="submit" asp-page-handler="Main" value="@res.CompanyTicker.ToString()" name="ticker" />
                                     <input type="hidden" value="@res.CompanyId.ToString()" name="idCompany" />
+                                    <input type="hidden" value="@res.CompanyName.ToString()" name="companyName" />
                                 </form>
                             </td>
-                            <td>@res.QuotePrice $</td>
-                            <td>@res.QuoteDate</td>
+                            <td class="quotePrice">@res.QuotePrice $</td>
+                            <td class="quoteDate">@res.QuoteDate</td>
                         </tr>
                     }
                 </tbody>

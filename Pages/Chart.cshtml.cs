@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using QuotesExchangeApp.Data;
 using QuotesExchangeApp.Models;
 
@@ -23,60 +23,32 @@ namespace QuotesExchangeApp.Pages
             { "Макс.", 10000000 }
         };
         public static Company CurrentCompany { get; set; }
-        public List<Result> Results { get; set; }
-        public string Json { get; set; }
+        public IEnumerable<DetaledCompany> Results { get; set; }
         private readonly ApplicationDbContext _context;
         public ChartModel(ApplicationDbContext db)
         {
             _context = db;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            CurrentCompany = _context.Companies.FirstOrDefault();
-            if (CurrentCompany != null)
-            {
-                TakeQuotes(TimeSpans["1 день"], CurrentCompany.Id);
-            }
+            CurrentCompany = await _context.Companies.FirstOrDefaultAsync();
+            await TakeCompaniesList();
         }
 
-        public void OnPostMain(Guid idCompany)
+        public async Task TakeCompaniesList()
         {
-            TakeQuotes(1440, idCompany);
-        }
-
-        public void OnPostCustom(int min)
-        {
-            TakeQuotes(min, CurrentCompany.Id);
-        }
-
-        public void TakeQuotes(int min, Guid idCompany)
-        {
-            CurrentCompany = _context.Companies.FirstOrDefault(x => x.Id == idCompany);
-            var res = _context.Quotes.Include(x => x.Company)
-                .Where(x => x.Company.Id == idCompany && x.Date > DateTime.Now.AddMinutes(-min)).ToList()
-                .OrderBy(x => x.Date)
-                .Select(x => new {
-                    QuotePrice = x.Price,
-                    QuoteDate = x.Date
-                }).ToList();
-            Json = JsonConvert.SerializeObject(res);
-            TakeCompaniesList();
-        }
-
-        public void TakeCompaniesList()
-        {
-            var res = _context.Quotes.Include(x => x.Company).ToList().GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First());
-            Results = (from quote in res.ToList()
-                       select new Result
-                       {
-                           QuoteId = quote.Id,
-                           CompanyId = quote.Company.Id,
-                           CompanyName = quote.Company.Name,
-                           CompanyTicker = quote.Company.Ticker,
-                           QuotePrice = quote.Price,
-                           QuoteDate = quote.Date,
-                       }).ToList();
+            var res = await _context.Quotes.Include(x => x.Company).ToListAsync();
+            Results = res.GroupBy(x => x.Company.Id, (key, g) => g.OrderByDescending(e => e.Date).First()).Select(quote =>
+                new DetaledCompany
+                {
+                    QuoteId = quote.Id,
+                    CompanyId = quote.Company.Id,
+                    CompanyName = quote.Company.Name,
+                    CompanyTicker = quote.Company.Ticker,
+                    QuotePrice = quote.Price,
+                    QuoteDate = quote.Date
+                });
         }
     }
 }

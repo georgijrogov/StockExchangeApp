@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuotesExchangeApp.Models
 {
-    public class Result
+    public class DetaledCompany
     {
         public Guid QuoteId { get; set; }
         public Guid CompanyId { get; set; }
